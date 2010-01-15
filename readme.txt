@@ -8,6 +8,10 @@ convenciones que debemos utilizar:
   acompañar cada commit con su mensaje respectivo explicando de manera resumida los cambios realizados
   hacer commit de versiones funcionales (evitar subir errores)
   en caso de subir un error, correguirlo a la brevedad posible
+
+  Deberiamos definir cuales son las reglas del editor de texto:
+    yo uso identacion de 2 espacios y reemplazo los tabs con espacios
+  
 a continuacion desbribo el significado de cada carpeta
   teoria/jesus/...
     contine mis archivos y notas de las clases... solo en caso que sean necesarias.
