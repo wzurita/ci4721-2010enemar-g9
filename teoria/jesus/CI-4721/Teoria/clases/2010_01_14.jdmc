@@ -1,0 +1,20 @@
+Convenciones:
+  A,B,C.... pertenecen a N
+  a,b,c.... pertenenen a E
+  alfa, beta, gamma,... pertenecen a (Union(N,E))*
+
+Analisis Sintactico :
+  Definicion (Gramatica libre de contexto):
+    ( N : No terminales
+    , E : Terminales (alfabeto)
+    , P : Producciones
+    ,S : Simbolo inicial
+    )
+  Definicion:
+    Dada:
+      una GLC G=(B,E,P,S)
+    Entonces:
+      
+  LR :
+    
+  LL :
