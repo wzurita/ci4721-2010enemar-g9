@@ -1,0 +1,29 @@
+Plataforma:
+  Lenguaje:
+    Java
+  Herramientas de generacion de analizadores sintacticos:
+    Claire
+    Jlex/Javacup
+    ANTLR
+  Herramienta de verificacion (depuracion de errores, principalmente ref.nulas e indices fuera de rango):
+    ESC/Java2 (java 1.4)
+      "Extended Static Checking"
+    JML
+      @requires: precondicion
+      @ensures: postcondicion
+      @invariant: invariantes de clase
+      @assert: aserciones intermedias
+Proyecto:
+  Lenguaje a implementar:
+    Lenguaje imperativo (mediano/pequeño)
+    Estaticamente tipeado
+      "todas" las verificaciones de tipo son hechas estaticamente
+    Asignaciones:
+      Tipos basicos
+        Cuales tipos basicos
+        Cuales son los operadores (para cada tipo)
+      Instrucciones basicas
+        Asignacion
+        Secuenciacion
+        Condicionales
+        Iteracion

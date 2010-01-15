@@ -1,0 +1,25 @@
+Analisis de Contexto =~ Analisis Semantico
+Mejoramiento de Codigo =~ Optimizacion de Codigo 
+
+
+Estructura interna de un compilador
+  Programa escrito en lenguaje fuente
+    FRONT - END:
+        [ Secuencia de Caracteres               ]
+      --( Analisis lexico gracico               )->
+        [ Secuencia de Tokens                   ]
+      --( Analisis Sintactico (Puro)            )->
+        [ Arbol Sintactico Abstracto            ]
+      --( Analisis de Contexto                  )->
+        [ Arbol Sintactico Abstracto "Decorado" ]
+    BACK - END:
+        [ Arbol Sintactico Abstracto "Decorado" ]
+      --( Generacion de Codigo Intermedio       )->
+        [ Representacion Intermedia             ]
+      --( Mejoramiento de Codigo Intermedio     )->
+        [ Representacion Intermedia Mejorada    ]
+      --( Generacion de Codigo                  )->
+        [ Codigo de Bajo Nivel                  ]
+      --( Mejoramiento de Codigo                )->
+        [ Codigo de Bajo Nivel Mejorado         ]
+     
