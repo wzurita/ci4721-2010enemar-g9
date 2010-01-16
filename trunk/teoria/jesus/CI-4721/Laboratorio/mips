@@ -1,0 +1,35 @@
+lw    : load-word
+lb    : load-byte
+la    : load-adress
+sw    : save-word
+sb    : save-byte
+
+add   : suma
+sub   : resta
+mult  : multiplicacion (HI LOW)
+div   : division (HI LOW)
+abs   : valor absoluto
+and   : y logico
+nor   : ¬(A+B)
+not   : no logico
+or    : o logico
+xor   : o exclusivo
+
+
+Lenguaje:
+  Nombre:
+    ???
+  Tipos Basicos:
+    Int
+      *,/
+      +,-
+    Float
+      *,/
+      +,-
+    Char
+      ???
+    Boolean
+      not
+      and
+      or
+      
