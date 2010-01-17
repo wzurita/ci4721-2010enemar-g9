@@ -1,0 +1,1727 @@
+<!doctype html public "-//w3c//dtd html 4.0 transitional//en">
+<html>
+<head>
+   <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+   <meta name="GENERATOR" content="Mozilla/4.61 [en] (X11; I; Linux 2.2.13-7mdk i686) [Netscape]">
+   <meta name="AUTHOR" content="Paul Pacheco">
+   <meta name="CREATED" content="19991016;273900">
+   <meta name="CHANGEDBY" content="Paul Pacheco">
+   <meta name="CHANGED" content="19991018;4191800">
+   <meta name="DESCRIPTION" content="This document contains the Jacc 2.0 manual">
+   <meta name="KEYWORDS" content="java yacc bison LALR grammar">
+   <title>Claire User's Manual</title>
+<style>
+	<!--
+		H3 { color: #000000 }
+		H2 { color: #000000 }
+		TH P { margin-bottom: 0cm; color: #000000 }
+		TD P { margin-bottom: 0cm; color: #000000 }
+		H1 { color: #000000; text-align: center }
+		P { color: #000000 }
+		P.parrafo-con-sangria { text-indent: 1cm }
+		P.code { margin-left: 2cm; font-family: "fixed", monospace }
+		A:visited { color: #551a8b }
+		A:link { color: #0000ee }
+	-->
+	</style>
+</head>
+<body text="#000000" bgcolor="#FFFFFF" link="#0000EE" vlink="#551A8B">
+
+<center>
+<h1 STYLE="margin-top: 0cm; margin-bottom: 0cm">
+Claire User's Manual</h1></center>
+
+<center><img SRC="blurulr6.gif" NAME="Imagen3" BORDER=0 height=5 width=640 align=BOTTOM></center>
+
+<p><a href="mailto:93-25642@ldc.usb.ve">Pa&uacute;l Pacheco</a>
+<br><a href="http://www.usb.ve/">Universidad Sim&oacute;n Bolivar</a>
+<br>September 1999 (version 3.0)
+<center>
+<p><img SRC="blurulr6.gif" NAME="Imagen2" BORDER=0 height=5 width=640 align=BOTTOM></center>
+
+<h2 STYLE="margin-top: 0cm; margin-bottom: 0cm">
+<a NAME="Contents"></a>Table of Contents</h2>
+
+<div STYLE="margin-bottom: 0cm"><a href="#About">About Claire</a></div>
+<a href="#Requirements">Requirements</a>
+<br><a href="#Installation">Installation</a>
+<br><a href="#Running">Running Claire</a>
+<blockquote><a href="#Command Line">Command Line</a></blockquote>
+<a href="#Structure">Structure of a source file</a>
+<blockquote><a href="#First Secction">First section:language dependent
+declarations</a>
+<br><a href="#Second Secction">Second section: language independent declarations</a>
+<br><a href="#third Secction">Third section: grammar rules</a></blockquote>
+<a href="#RE">Regular Expressions</a>
+<blockquote>
+<div STYLE="margin-top: 0cm; margin-bottom: 0cm"><a href="#REIssues">Issues
+related to regular expressions</a></div>
+</blockquote>
+<a href="#alias">Alias</a>
+<br><a href="#grammar">Grammar</a>
+<br><a href="#precedence">Precedence and Associativity</a>
+<br><a href="#actions">Semantic Actions</a>
+<br><a href="#values">Data Types and Semantic Values</a>
+<br><a href="#macros">Macros</a>
+<br><a href="#white">White Spaces</a>
+<br><a href="#positions">Symbol Positions</a>
+<br><a href="#other">Other Documents</a>
+<br><a href="#Examples">Examples</a>
+<center>
+<p><img SRC="blurulr6.gif" NAME="Imagen1" BORDER=0 height=5 width=640 align=BOTTOM></center>
+
+<h2 STYLE="margin-top: 0cm; margin-bottom: 0cm">
+<a NAME="About"></a>About Claire</h2>
+
+<div CLASS="parrafo-con-sangria">Yac4J was originally written by <a href="mailto:93-24953@ldc.usb.ve">Maria
+Eugen&iacute;a Ahues</a>, <a href="mailto:93-25595@ldc.usb.ve">Bernardo
+Alfredo Munos Franky</a> and <a href="mailto:rmsantos@ldc.usb.ve">Rui M.
+Santos S </a>with Professor Ascander Su&aacute;rez as their tutor, at the
+end of 1998 in Universidad Sim&oacute;n Bol&iacute;var in Venezuela.</div>
+
+<div CLASS="parrafo-con-sangria">Claire is written by <a href="mailto:paulpach@usa.net">Pa&uacute;l
+Pacheco</a>, again with the supervision of Professor Ascander Su&aacute;rez
+in Universidad Sim&oacute;n Bol&iacute;var. This new version makes lots
+of improvements to the original version.</div>
+
+<div CLASS="parrafo-con-sangria">Claire is a 100% java compatible LR(1)
+parser and lexical analizer generator. Besides being much easier to use
+than traditional tools such as bison+flex, javacup+JLex, yacc+lex, etc...,
+Claire contains some radical new ideas such as macro productions, local
+casting, multiple starting points, unicode support and multithread safe.
+It also contains most of the useful traditional ideas like internal actions,
+precedence and associativity specification. Claire is also language independant,
+that is it can generate code on any language it has a plugin for.</div>
+
+<div CLASS="parrafo-con-sangria">Since Claire uses a LR(1) engine for input
+recognition, it is more powerful than traditional LALR(1) tools, such as
+bison, javacup, yacc, etc...&nbsp; Anything that can be recognized by a
+LALR(1) parser, can be recognized by a LR(1) parser, but not the other
+way around.
+<p>Claire is a parser generator usefull for creating analizers in any language.
+<br>Copyright (C) 1999 Paul Pacheco
+<p>This library is free software; you can redistribute it and/or
+<br>modify it under the terms of the GNU Lesser General Public
+<br>License as published by the Free Software Foundation; either
+<br>version 2 of the License, or (at your option) any later version.
+<p>This library is distributed in the hope that it will be useful,
+<br>but WITHOUT ANY WARRANTY; without even the implied warranty of
+<br>MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.&nbsp; See the
+GNU
+<br>Lesser General Public License for more details.
+<p>You should have received a copy of the GNU Lesser General Public
+<br>License along with this library; if not, write to the Free Software
+<br>Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA&nbsp; 02111-1307&nbsp;
+USA
+<p>Check out the <a href="LICENSE">LICENSE</a> for details
+<br>&nbsp;</div>
+<a href="#Contents">Return to Contents</a>
+<center>
+<p><img SRC="blurulr6.gif" NAME="Imagen4" BORDER=0 height=5 width=640 align=BOTTOM></center>
+
+<h2 STYLE="margin-top: 0cm; margin-bottom: 0cm">
+<a NAME="Requirements"></a>Requirements</h2>
+
+<div CLASS="parrafo-con-sangria">In order to install Claire, you will need:</div>
+
+<ul>
+<li CLASS="parrafo-con-sangria" STYLE="text-indent: 0cm">
+JDK 1.2 or higher. You can find it at <a href="http://java.sun.com/">http://java.sun.com</a></li>
+</ul>
+<a href="#Contents">Return to Contents</a>
+<center>
+<p><img SRC="blurulr6.gif" NAME="Imagen5" BORDER=0 height=5 width=640 align=BOTTOM></center>
+
+<h2 STYLE="margin-top: 0cm; margin-bottom: 0cm">
+<a NAME="Installation"></a>Installation</h2>
+
+<div CLASS="parrafo-con-sangria">If you downloaded ClaireSetup.class, type:</div>
+
+<blockquote>
+<pre STYLE="margin-left: 2cm">java ClaireSetup</pre>
+</blockquote>
+
+<div CLASS="parrafo-con-sangria">and follow instructions.</div>
+
+<div CLASS="parrafo-con-sangria">If you downloaded Claire.zip, just decompress
+it to a desired directory using winzip or an equivalent tool.</div>
+
+<div CLASS="parrafo-con-sangria">Add Runtime.jar to the CLASSPATH environment
+variable,</div>
+
+<div CLASS="parrafo-con-sangria">In Unix, type:</div>
+
+<blockquote>
+<pre STYLE="margin-left: 2cm">export CLASSPATH=$CLASSPATH:Runtime.jar</pre>
+</blockquote>
+
+<div CLASS="parrafo-con-sangria">In Windows, add the following to autoexec.bat,
+and reboot:</div>
+
+<blockquote>
+<pre STYLE="margin-left: 2cm">set CLASSPATH=%CLASSPATH%;Runtime.jar</pre>
+</blockquote>
+
+<div CLASS="parrafo-con-sangria">note that you may have to append the directory
+where Runtime.jar is.</div>
+<a href="#Contents">Return to Contents</a>
+<p><img SRC="blurulr6.gif" NAME="Imagen5" BORDER=0 height=5 width=640 align=BOTTOM>
+<h2 STYLE="margin-top: 0cm; margin-bottom: 0cm">
+<a NAME="Running"></a>Running Claire</h2>
+
+<div CLASS="parrafo-con-sangria">To run Claire, create a grammar file,
+say test.clr and type:</div>
+
+<div CLASS="code">Claire test.clr</div>
+
+<div CLASS="parrafo-con-sangria">This will generate a file in the desired
+language (only java for now) which you have to compile using your usual
+compiler.</div>
+
+<h3 STYLE="margin-top: 0cm; margin-bottom: 0cm">
+<a NAME="Command Line"></a>Command Line</h3>
+
+<div CLASS="parrafo-con-sangria">The complete command line of Claire is
+as follows:</div>
+
+<table BORDER CELLSPACING=0 CELLPADDING=4 WIDTH="100%" NOSAVE >
+<caption>&nbsp;</caption>
+
+<tr VALIGN=TOP>
+<td WIDTH="35%">
+<center>
+<h3>
+Command line option</h3></center>
+</td>
+
+<td WIDTH="65%">
+<center>
+<h3>
+Description</h3></center>
+</td>
+</tr>
+
+<tr>
+<td><tt>Claire --help | -h&nbsp;</tt></td>
+
+<td>Shows a summary of the command line options</td>
+</tr>
+
+<tr VALIGN=TOP>
+<td WIDTH="35%">
+<pre><tt>Claire --help &lt;lang> | -h &lt;lang></tt></pre>
+</td>
+
+<td WIDTH="65%">Shows a summary of the command line options for a specific
+language. Currently only works with java</td>
+</tr>
+
+<tr VALIGN=TOP>
+<td WIDTH="35%">
+<pre><tt>Claire --version</tt></pre>
+</td>
+
+<td WIDTH="65%">Shows the version number of the current release</td>
+</tr>
+
+<tr VALIGN=TOP>
+<td WIDTH="35%">
+<pre><tt>Claire --list</tt></pre>
+</td>
+
+<td WIDTH="65%">Shows a list of available languages. Currently, only displays
+java</td>
+</tr>
+
+<tr VALIGN=TOP>
+<td WIDTH="35%">
+<pre><tt>Claire [options] &lt;file></tt></pre>
+</td>
+
+<td WIDTH="65%">Compiles a grammar contained in &lt;file>, use - for standard
+input. Options is one of the following</td>
+</tr>
+
+<tr VALIGN=TOP>
+<td WIDTH="35%">
+<blockquote>
+<pre STYLE="margin-left: 2cm"><tt>-l &lt;lang> | --language &lt;lang></tt></pre>
+</blockquote>
+</td>
+
+<td WIDTH="65%">Specify the language to be used. Currently, only works
+with java</td>
+</tr>
+
+<tr VALIGN=TOP>
+<td WIDTH="35%">
+<blockquote>
+<pre STYLE="margin-left: 2cm"><tt>-e &lt;num> | --expand &lt;num></tt></pre>
+</blockquote>
+</td>
+
+<td WIDTH="65%">Specify the macro expansion level.</td>
+</tr>
+
+<tr VALIGN=TOP>
+<td WIDTH="35%">
+<blockquote>
+<pre STYLE="margin-left: 2cm"><tt>-d &lt;dir> | --dir &lt;dir></tt></pre>
+</blockquote>
+</td>
+
+<td WIDTH="65%">Specify the directory where the generated files are going
+to be placed</td>
+</tr>
+
+<tr VALIGN=TOP>
+<td WIDTH="35%">
+<blockquote>
+<pre STYLE="margin-left: 2cm"><tt>-v &lt;file> | --verbose &lt;file>&nbsp;</tt></pre>
+</blockquote>
+</td>
+
+<td WIDTH="65%">Specify a file to where verbose information is going to
+be written</td>
+</tr>
+
+<tr VALIGN=TOP>
+<td WIDTH="35%">
+<blockquote>
+<pre STYLE="margin-left: 2cm"><tt>-n | --nomain</tt></pre>
+</blockquote>
+</td>
+
+<td WIDTH="65%">Does not write a main function for the generated files.</td>
+</tr>
+
+<tr VALIGN=TOP>
+<td WIDTH="35%">
+<blockquote>
+<pre STYLE="margin-left: 2cm"><tt>-p | --perf&nbsp;</tt></pre>
+</blockquote>
+</td>
+
+<td WIDTH="65%">Shows some performance reports. Only useful for debugging
+Claire.</td>
+</tr>
+
+<tr>
+<td VALIGN=TOP COLSPAN="2" WIDTH="100%">
+<center>There are other command line options available for each language
+translator. Check out <a href="#other">other documents</a> for details</center>
+</td>
+</tr>
+</table>
+
+<p><a href="#Contents">Return to Contents</a>
+<center>
+<p><img SRC="blurulr6.gif" NAME="Imagen6" BORDER=0 height=5 width=640 align=BOTTOM></center>
+
+<h2 STYLE="margin-top: 0cm; margin-bottom: 0cm">
+<a NAME="Structure"></a>Structure of a source file</h2>
+
+<div CLASS="parrafo-con-sangria">A source file is divided in three sections,
+not separated by anything. The first section contains the package and imports
+declarations. The second section contains compiler directives, and several
+options. The last section contains the grammar rules.</div>
+
+<h3 STYLE="margin-top: 0cm; margin-bottom: 0cm">
+<a NAME="First Secction"></a>First Section, language dependent declarations</h3>
+
+<div CLASS="parrafo-con-sangria">This section contains the language specific
+options. According to the language to be used, this section contains different
+options and declarations. The code placed in this section is passed as
+is to the corresponding translator. The language dependent code can be
+specified in two ways:</div>
+
+<div CLASS="parrafo-con-sangria">The first way is just to write the code.
+This method has the limitation that only java like languages are supported.
+If the code is just written, it can not contain characters such as (, ),
+:, ...</div>
+
+<div CLASS="parrafo-con-sangria">The second way is to write</div>
+
+<blockquote>
+<pre CLASS="code">%lang &lt;LANG> { code ... }</pre>
+</blockquote>
+
+<div CLASS="parrafo-con-sangria">&lt;LANG> is the language to be used,
+if it is not specified, then the language can be specified throw command
+line. By default, the language to be used is java. Whatever "code" is will
+be passed as is to the appropriate translator.</div>
+
+<div CLASS="parrafo-con-sangria">The following two examples are equivalent:</div>
+
+<table BORDER CELLSPACING=0 CELLPADDING=4 WIDTH="100%" NOSAVE >
+<caption>&nbsp;</caption>
+
+<tr VALIGN=TOP NOSAVE>
+<td WIDTH="50%" NOSAVE>
+<pre STYLE="margin-bottom: 0.5cm"><tt>/** This code is written in java,
+* but there is no reason why it
+* couldnt be C++ or perl
+*/
+
+import java.util.*;
+
+/** Class that will contain the parser. */
+class MyParser
+{
+}</tt></pre>
+</td>
+
+<td WIDTH="50%">
+<pre><tt>%lang
+{
+&nbsp;&nbsp; /** This code is written in java,&nbsp;
+&nbsp;&nbsp;&nbsp;&nbsp; * but there is no reason why it
+&nbsp;&nbsp;&nbsp;&nbsp; * couldnt be C++ or perl
+&nbsp;&nbsp; */
+
+&nbsp;&nbsp; import java.util.*;
+
+&nbsp;&nbsp; /** Class that will contain the parser. */
+
+&nbsp;&nbsp; class MyParser
+&nbsp;&nbsp; {
+&nbsp;&nbsp; }
+}</tt></pre>
+</td>
+</tr>
+</table>
+
+
+<p STYLE="margin-top: 0cm; margin-bottom: 0cm">For a description of what
+should be placed here for each language, check out the description of each
+language in the <a href="#other">other documents</a> section
+<h3 STYLE="margin-top: 0cm; margin-bottom: 0cm">
+<a NAME="Second Secction"></a>Second Section, language independent declarations</h3>
+This section contains all the options that apply to any language.<tt> This
+section may be empty making Claire take the default values. The available
+options are:</tt>
+<table BORDER CELLSPACING=0 CELLPADDING=4 WIDTH="100%" NOSAVE >
+<caption>&nbsp;</caption>
+
+<tr VALIGN=TOP>
+<td WIDTH="30%">
+<pre><tt>%start &lt;Symbol>, &lt;Symbol>, ...</tt></pre>
+</td>
+
+<td WIDTH="70%">This tells claire what are the available starting points.
+Claire has the unique characteristic that multiple starting symbols can
+be specified. The desired starting symbol can then be specified at runtime,
+according to the language to be used. This can be used for example to test
+small parts of the grammar, or to reuse parts of a grammar. If this option
+is omitted, then Claire will use the first non terminal symbol as the starting
+point.</td>
+</tr>
+
+<tr VALIGN=TOP NOSAVE>
+<td WIDTH="30%">
+<pre><tt>%expand &lt;number></tt></pre>
+</td>
+
+<td WIDTH="70%" NOSAVE>
+<div STYLE="margin-bottom: 0.5cm">This tells claire how deep macros should
+be expanded. Consider the following case:</div>
+
+<pre CLASS="code">f(x): f(f(x))&nbsp;</pre>
+
+<div STYLE="margin-bottom: 0.5cm">Here, if we use f(a), Claire will create
+f(f(a)), but if f(f(a)) is created, then f(f(f(a))) is created, etc...
+This kind of macros would lead to an infinite loop, this option limits
+the amount of expansions to &lt;number>. In the above example, if 5 is
+specified, then once f(f(f(f(f(a))))) is created, it will stop there and
+issue a warning. Note that simple recursion like in the following example
+:&nbsp;</div>
+
+<pre CLASS="code">f(x): f(x) x
+&nbsp;&nbsp;&nbsp; | x&nbsp;</pre>
+
+<div STYLE="margin-bottom: 0.5cm">will work as expected, an infinite list.</div>
+If this option is not specified, then the limit will be 8 by default.</td>
+</tr>
+
+<tr VALIGN=TOP>
+<td WIDTH="30%">
+<pre><tt>%nomain</tt></pre>
+</td>
+
+<td WIDTH="70%">Prevents the compiler from generating a main function.
+A main function is the code needed to start a program. If an automatic
+main function is created, the generated code will be able to run and invoke
+the parser by itself.</td>
+</tr>
+
+<tr VALIGN=TOP>
+<td WIDTH="30%">
+<pre><tt>%main</tt></pre>
+</td>
+
+<td WIDTH="70%">Tells the compiler to generate a main function. A main
+function is the code needed to start a program. If an automatic main function
+is created, the generated code will be able to run and invoke the parser
+by itself.</td>
+</tr>
+</table>
+
+<h3 STYLE="margin-top: 0cm; margin-bottom: 0cm">
+<a NAME="third Secction"></a>Third Section, grammar rules</h3>
+This section contains the actual grammar rules. A rule is a composition
+of a left hand symbol and some right hand symbols. The rules are the representation
+of a context free grammar, in a BNF like format. This section also contains
+the regular expressions and code associated with the rules.
+<p><a href="#Contents">Return to Contents</a>
+<center>
+<p><img SRC="blurulr6.gif" NAME="Imagen7" BORDER=0 height=5 width=640 align=BOTTOM></center>
+
+<h2 STYLE="margin-top: 0cm; margin-bottom: 0cm">
+<a NAME="RE"></a>Regular Expressions</h2>
+
+<div CLASS="parrafo-con-sangria">The first step to recognize a language
+is to split the input into well defined words like identifiers, number,
+separators, ... This is done throw regular expressions. Regular expressions
+can appear anywhere in a right hand. In Claire, regular expressions can
+be specified inside quotes. The general form of regular expressions are:</div>
+
+<div CLASS="parrafo-con-sangria">if r, r1 and r2 are regular expressions,
+and x is any character, then the following are regular expressions:</div>
+
+<table BORDER CELLSPACING=0 CELLPADDING=4 WIDTH="100%" NOSAVE >
+<caption>&nbsp;</caption>
+
+<tr>
+<th WIDTH="22%">Expression</th>
+
+<th WIDTH="9%">Precedence</th>
+
+<th WIDTH="69%">Description</th>
+</tr>
+
+<tr>
+<td WIDTH="22%">
+<pre CLASS="code" STYLE="margin-left: 0cm"><tt>\uhhhh</tt></pre>
+</td>
+
+<td WIDTH="9%">
+<center>1</center>
+</td>
+
+<td WIDTH="69%">Recognizes the <tt>\uhhhh</tt> unicode character, where
+hhhh is an hexadecimal number</td>
+</tr>
+
+<tr>
+<td WIDTH="22%">
+<pre CLASS="code" STYLE="margin-left: 0cm"><tt>\ooo</tt></pre>
+</td>
+
+<td WIDTH="9%">
+<center>1</center>
+</td>
+
+<td WIDTH="69%">Recognizes the \ooo character, where ooo is an octal number</td>
+</tr>
+
+<tr>
+<td WIDTH="22%">
+<pre CLASS="code" STYLE="margin-left: 0cm"><tt>\n, \r, \b, \t, \f</tt></pre>
+</td>
+
+<td WIDTH="9%">
+<center>1</center>
+</td>
+
+<td WIDTH="69%">These have the same special meaning they have in java and
+C</td>
+</tr>
+
+<tr>
+<td WIDTH="22%">
+<pre CLASS="code" STYLE="margin-left: 0cm"><tt>\x</tt></pre>
+</td>
+
+<td WIDTH="9%">
+<center>1</center>
+</td>
+
+<td WIDTH="69%">
+<div STYLE="margin-bottom: 0.5cm">Recognizes the x character. It is useful
+for special purpose characters. For example:&nbsp;</div>
+
+<pre STYLE="margin-left: 2cm"><tt><font face="fixed, monospace">\. , \\ , \+</font></tt></pre>
+</td>
+</tr>
+
+<tr>
+<td WIDTH="22%">
+<pre CLASS="code" STYLE="margin-left: 0cm"><tt>.</tt></pre>
+</td>
+
+<td WIDTH="9%">
+<center>1</center>
+</td>
+
+<td WIDTH="69%">Recognizes any character</td>
+</tr>
+
+<tr>
+<td WIDTH="22%">
+<pre CLASS="code" STYLE="margin-left: 0cm"><tt>[...]</tt></pre>
+</td>
+
+<td WIDTH="9%">
+<center>1</center>
+</td>
+
+<td WIDTH="69%">
+<div STYLE="margin-bottom: 0.5cm">List a range or family of characters.
+Inside the brackets, there can be any combination of simple characters
+and range of characters. This will recognize only one character that is
+listed. For example:&nbsp;</div>
+
+<pre STYLE="margin-left: 2cm"><tt><font face="fixed, monospace">[0-9] , [a-z] , [abcde] , [0-9a-zA-Z_]</font></tt></pre>
+</td>
+</tr>
+
+<tr>
+<td WIDTH="22%">
+<pre CLASS="code" STYLE="margin-left: 0cm"><tt>[^...]</tt></pre>
+</td>
+
+<td WIDTH="9%">
+<center>1</center>
+</td>
+
+<td WIDTH="69%">
+<div STYLE="margin-bottom: 0.5cm">Recognizes any character that is not
+listed. For example:</div>
+
+<pre STYLE="margin-left: 2cm"><tt><font face="fixed, monospace">[^0-9] , [^\n]</font></tt></pre>
+</td>
+</tr>
+
+<tr>
+<td WIDTH="22%">
+<pre CLASS="code" STYLE="margin-left: 0cm"><tt>(r)</tt></pre>
+</td>
+
+<td WIDTH="9%">
+<center>1</center>
+</td>
+
+<td WIDTH="69%">
+<div STYLE="margin-bottom: 0.5cm">Recognizes the same as r. Useful for
+overriding precedence. For example:&nbsp;</div>
+
+<pre STYLE="margin-left: 2cm"><tt><font face="fixed, monospace">(a|b)*</font></tt></pre>
+</td>
+</tr>
+
+<tr>
+<td WIDTH="22%">
+<pre CLASS="code" STYLE="margin-left: 0cm"><tt>r?</tt></pre>
+</td>
+
+<td WIDTH="9%">
+<center>2</center>
+</td>
+
+<td WIDTH="69%">recognizes an empty string or r</td>
+</tr>
+
+<tr>
+<td WIDTH="22%">
+<pre CLASS="code" STYLE="margin-left: 0cm"><tt>r*</tt></pre>
+</td>
+
+<td WIDTH="9%">
+<center>2</center>
+</td>
+
+<td WIDTH="69%">recognizes zero or more times r</td>
+</tr>
+
+<tr>
+<td WIDTH="22%">
+<pre CLASS="code" STYLE="margin-left: 0cm"><tt>r+</tt></pre>
+</td>
+
+<td WIDTH="9%">
+<center>2</center>
+</td>
+
+<td WIDTH="69%">recognizes one or more times r</td>
+</tr>
+
+<tr>
+<td WIDTH="22%">
+<pre CLASS="code" STYLE="margin-left: 0cm"><tt>r{n}</tt></pre>
+</td>
+
+<td WIDTH="9%">
+<center>2</center>
+</td>
+
+<td WIDTH="69%">recognizes n times r</td>
+</tr>
+
+<tr>
+<td WIDTH="22%">
+<pre CLASS="code" STYLE="margin-left: 0cm"><tt>r{n,}</tt></pre>
+</td>
+
+<td WIDTH="9%">
+<center>2</center>
+</td>
+
+<td WIDTH="69%">recognizes n or more times r</td>
+</tr>
+
+<tr>
+<td WIDTH="22%">
+<pre CLASS="code" STYLE="margin-left: 0cm"><tt>r{n,m}</tt></pre>
+</td>
+
+<td WIDTH="9%">
+<center>2</center>
+</td>
+
+<td WIDTH="69%">recognizes from n to m times r</td>
+</tr>
+
+<tr>
+<td WIDTH="22%">
+<pre CLASS="code" STYLE="margin-left: 0cm"><tt>r1r2</tt></pre>
+</td>
+
+<td WIDTH="9%">
+<center>3</center>
+</td>
+
+<td WIDTH="69%">recognizes r1 followed by r2</td>
+</tr>
+
+<tr>
+<td WIDTH="22%">
+<pre CLASS="code" STYLE="margin-left: 0cm"><tt>!r</tt></pre>
+</td>
+
+<td WIDTH="9%">
+<center>4</center>
+</td>
+
+<td WIDTH="69%">recognizes anything that to doesn't contain r</td>
+</tr>
+
+<tr>
+<td WIDTH="22%">
+<pre CLASS="code" STYLE="margin-left: 0cm"><tt>r1|r2</tt></pre>
+</td>
+
+<td WIDTH="9%">
+<center>5</center>
+</td>
+
+<td WIDTH="69%">recognizes anything that matches r1 or r2</td>
+</tr>
+
+<tr>
+<td WIDTH="22%">
+<pre CLASS="code" STYLE="margin-left: 0cm"><tt>r1&amp;r2</tt></pre>
+</td>
+
+<td WIDTH="9%">
+<center>5</center>
+</td>
+
+<td WIDTH="69%">recognizes anything that matches r1 and r2</td>
+</tr>
+
+<tr>
+<td WIDTH="22%">
+<pre CLASS="code" STYLE="margin-left: 0cm"><tt>r1^r2</tt></pre>
+</td>
+
+<td WIDTH="9%">
+<center>5</center>
+</td>
+
+<td WIDTH="69%">recognizes anything that matches r1 xor r2</td>
+</tr>
+
+<tr>
+<td WIDTH="22%">
+<pre CLASS="code" STYLE="margin-left: 0cm"><tt>r1-r2</tt></pre>
+</td>
+
+<td WIDTH="9%">
+<center>5</center>
+</td>
+
+<td WIDTH="69%">recognizes anything that matches r1 but not r2</td>
+</tr>
+
+<tr NOSAVE>
+<td WIDTH="22%">
+<pre CLASS="code" STYLE="margin-left: 0cm"><tt>x</tt></pre>
+</td>
+
+<td WIDTH="9%" SDVAL="1" SDNUM="1034;">
+<center>1</center>
+</td>
+
+<td WIDTH="69%" NOSAVE>Recognizes x as long as x is not a special character</td>
+</tr>
+</table>
+
+
+<p CLASS="parrafo-con-sangria">Some examples of regular expressions are:
+<table BORDER CELLSPACING=0 CELLPADDING=4 WIDTH="100%" NOSAVE >
+<caption>&nbsp;</caption>
+
+<tr VALIGN=TOP>
+<th WIDTH="33%">Example</th>
+
+<th WIDTH="67%">Explanation</th>
+</tr>
+
+<tr VALIGN=TOP>
+<td WIDTH="33%">
+<div CLASS="code" STYLE="margin-left: 0cm">
+<pre><tt>"\+"</tt></pre>
+</div>
+</td>
+
+<td WIDTH="67%">Recognizes the character +</td>
+</tr>
+
+<tr VALIGN=TOP>
+<td WIDTH="33%">
+<div CLASS="code" STYLE="margin-left: 0cm">
+<pre><tt>".*"</tt></pre>
+</div>
+</td>
+
+<td WIDTH="67%">Recognizes everything</td>
+</tr>
+
+<tr VALIGN=TOP>
+<td WIDTH="33%">
+<div CLASS="code" STYLE="margin-left: 0cm">
+<pre><tt>"[0-9]"</tt></pre>
+</div>
+</td>
+
+<td WIDTH="67%">Recognizes any decimal digit</td>
+</tr>
+
+<tr VALIGN=TOP NOSAVE>
+<td WIDTH="33%">
+<div CLASS="code" STYLE="margin-left: 0cm">
+<pre><tt>"[0-9]+"</tt></pre>
+</div>
+</td>
+
+<td WIDTH="67%" NOSAVE>Recognizes any decimal number</td>
+</tr>
+
+<tr VALIGN=TOP>
+<td WIDTH="33%">
+<div CLASS="code" STYLE="margin-left: 0cm">
+<pre><tt>"-?[0-9]+"</tt></pre>
+</div>
+</td>
+
+<td WIDTH="67%">Recognizes any integer number</td>
+</tr>
+
+<tr VALIGN=TOP>
+<td WIDTH="33%">
+<div CLASS="code" STYLE="margin-left: 0cm">
+<pre><tt>"[0-9]*"</tt></pre>
+</div>
+</td>
+
+<td WIDTH="67%">Recognizes the empty string or any decimal number</td>
+</tr>
+
+<tr VALIGN=TOP>
+<td WIDTH="33%">
+<div CLASS="code" STYLE="margin-left: 0cm">
+<pre><tt>"[a-zA-Z_][a-zA-Z0-9_]*"</tt></pre>
+</div>
+</td>
+
+<td WIDTH="67%">Recognizes a java identifier, any combination of characters,
+numbers and _ that can not start with a number,&nbsp;</td>
+</tr>
+
+<tr VALIGN=TOP>
+<td WIDTH="33%">
+<div CLASS="code" STYLE="margin-left: 0cm">
+<pre><tt>"[a-zA-Z0-9_]*-[0-9].*"</tt></pre>
+</div>
+</td>
+
+<td WIDTH="67%">Same as above, any combination of characters, numbers and
+_, except anything that starts with a number</td>
+</tr>
+
+<tr VALIGN=TOP>
+<td WIDTH="33%">
+<div CLASS="code" STYLE="margin-left: 0cm">
+<pre><tt>"[a-fA-F0-9]+"</tt></pre>
+</div>
+</td>
+
+<td WIDTH="67%">Recognizes any hexadecimal number</td>
+</tr>
+
+<tr VALIGN=TOP>
+<td WIDTH="33%">
+<div CLASS="code" STYLE="margin-left: 0cm">
+<pre><tt>"0[xX][a-fA-F0-9]+"</tt></pre>
+</div>
+</td>
+
+<td WIDTH="67%">Recognizes any hexadecimal number like in java, with a
+0x prefix</td>
+</tr>
+
+<tr VALIGN=TOP>
+<td WIDTH="33%">
+<div CLASS="code" STYLE="margin-left: 0cm">
+<pre><tt>"[0-9]+|[a-fA-F0-9]+"</tt></pre>
+</div>
+</td>
+
+<td WIDTH="67%">Recognizes any decimal or hexadecimal number like in java.</td>
+</tr>
+
+<tr VALIGN=TOP>
+<td WIDTH="33%">
+<div CLASS="code" STYLE="margin-left: 0cm">
+<pre><tt>"#[^\n\r]*"</tt></pre>
+</div>
+</td>
+
+<td WIDTH="67%">Recognizes perl like comments, an # and anything until
+end of line</td>
+</tr>
+
+<tr VALIGN=TOP>
+<td WIDTH="33%">
+<div CLASS="code" STYLE="margin-left: 0cm">
+<pre><tt>"//[^\n\r]*"</tt></pre>
+</div>
+</td>
+
+<td WIDTH="67%">Same as above, but for c++ like comments</td>
+</tr>
+
+<tr VALIGN=TOP>
+<td WIDTH="33%">
+<div CLASS="code" STYLE="margin-left: 0cm">
+<pre><tt>"if"</tt></pre>
+</div>
+</td>
+
+<td WIDTH="67%">Recognizes the keyword if</td>
+</tr>
+
+<tr VALIGN=TOP>
+<td WIDTH="33%">
+<div CLASS="code" STYLE="margin-left: 0cm">
+<pre><tt>"while"</tt></pre>
+</div>
+</td>
+
+<td WIDTH="67%">Recognizes the keywork while</td>
+</tr>
+
+<tr VALIGN=TOP>
+<td WIDTH="33%">
+<div CLASS="code" STYLE="margin-left: 0cm">
+<pre><tt>"[a-zA-Z_][a-zA-Z0-9_]*-while-if"</tt></pre>
+</div>
+</td>
+
+<td WIDTH="67%">Recognizes any identifier, except while e if</td>
+</tr>
+</table>
+
+<br>&nbsp;
+<h3 STYLE="margin-top: 0cm; margin-bottom: 0cm">
+<a NAME="REIssues"></a>Issues related to regular expressions:</h3>
+
+<div CLASS="parrafo-con-sangria">There are times when two or more regular
+expressions can recognize the same text. Consider recognizing java like
+identifiers, and keywords like "if" and "while". The tree necessary regular
+expressions are:</div>
+
+<blockquote>
+<pre CLASS="code"><tt>"[a-zA-Z_][a-zA-Z0-9_]*", "if", "then"</tt></pre>
+</blockquote>
+
+<div CLASS="parrafo-con-sangria">If the input text is "if", then both the
+identifiers and "if" regular expressions can recognize it. If this is the
+case, Claire will give priority to the regular expression that is written
+first.</div>
+
+<div CLASS="parrafo-con-sangria">Even if the same regular expression is
+written twice in the grammar, they will be considered as two separated
+regular expressions.</div>
+
+<div CLASS="parrafo-con-sangria">To avoid having to modify the order of
+the rules, and to reuse regular expressions it is possible to use alias
+to define regular expressions.</div>
+<a href="#Contents">Return to Contents</a>
+<center>
+<p><img SRC="blurulr6.gif" NAME="Imagen8" BORDER=0 height=5 width=640 align=BOTTOM></center>
+
+<h2 STYLE="margin-top: 0cm; margin-bottom: 0cm">
+<a NAME="alias"></a>Alias</h2>
+
+<div CLASS="parrafo-con-sangria">Alias are a simple mechanism for giving
+a name to a symbol. It is especially useful for giving names to regular
+expressions. An alias is a instruction of the form:</div>
+
+<blockquote>
+<pre CLASS="code"><tt>a = b</tt></pre>
+</blockquote>
+
+<div CLASS="parrafo-con-sangria">where a and b are symbols. Wherever claire
+finds the symbol a, it replaces it with b. For example:</div>
+
+<blockquote>
+<pre CLASS="code"><tt>identifiers = "[a-zA-Z_][a-zA-Z0-9_]*"
+number = "[0-9]+"</tt></pre>
+</blockquote>
+
+<div CLASS="parrafo-con-sangria">Wherever you need to recognize an identifier,
+you can place the alias identifiers, and wherever you need to recognize
+a number, use number.</div>
+
+<div CLASS="parrafo-con-sangria">It is recommended that all regular expressions
+that need to be used in many places are defined throw alias. Also, regular
+expressions that conflict with each other like identifiers and keyword
+should be declared as alias, in the appropriate order.</div>
+
+<div CLASS="parrafo-con-sangria">For example, if you have identifier, "if"
+and "while", a proper order would be:</div>
+
+<blockquote>
+<pre CLASS="code"><tt>if = "if"
+while = "while"
+identifiers = "[a-zA-Z_][a-zA-Z0-9_]*"</tt></pre>
+</blockquote>
+
+<div CLASS="parrafo-con-sangria">This will give priority to the keywords
+and then the identifiers.
+<p>&nbsp;Alias can also be used inside <a href="#RE">regular expressions</a>
+and <a href="#actions">semantic actions</a>. To use an alias inside a regular
+expression just write the alias inside ${}. For example:
+<blockquote>
+<pre>digit="[0-9]"
+number="${digit}+"
+
+hexDigit="[a-fA-F0-9]"
+hexNumber="${hexDigit}+"</pre>
+</blockquote>
+</div>
+<a href="#Contents">Return to Contents</a>
+<center>
+<p><img SRC="blurulr6.gif" NAME="Imagen9" BORDER=0 height=5 width=640 align=BOTTOM></center>
+
+<h2 STYLE="margin-top: 0cm; margin-bottom: 0cm">
+<a NAME="grammar"></a>Grammar</h2>
+
+<div CLASS="parrafo-con-sangria">Claire recognizes LR(1) grammars which
+are more powerful than LALR(1) grammars used by tools such as bison, yacc,
+javacup, .... The grammars are expressed in an BNF like format. Under the
+BNF format, a grammar is a set of rules. A rule in a grammar is of the
+form:</div>
+
+<div CLASS="code">
+<blockquote>
+<pre><tt>leftHand: rightHand</tt></pre>
+</blockquote>
+</div>
+leftHand is any symbol that is not a regular expression. This symbols are
+called non terminals. RightHand is a list of regular expression and non
+terminal symbols. Note that RightHand might be empty. For example, a list
+of identifiers can be expressed as:
+<blockquote>
+<pre CLASS="code"><tt>identifier = "[a-zA-Z_][a-zA-Z0-9_]*"
+
+idlist: identifier idlist
+idlist:</tt></pre>
+</blockquote>
+
+<div CLASS="parrafo-con-sangria"><tt><font face="times, serif">This means
+idlist might be of the form identifier followed by a list of identifiers,
+or it might be empty.</font></tt></div>
+
+<div CLASS="parrafo-con-sangria"><tt><font face="times, serif">If two rules
+have the same left hand, they can be abbreviated separating each right
+hand with |. The example above is the same as:</font></tt></div>
+
+<br>&nbsp;
+<blockquote>
+<pre CLASS="code"><tt>identifier = "[a-zA-Z_][a-zA-Z0-9_]*"
+idlist: identifier idlist
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; |</tt></pre>
+</blockquote>
+
+<div CLASS="parrafo-con-sangria">Some examples of grammars are:</div>
+
+<table BORDER CELLSPACING=0 CELLPADDING=4 WIDTH="100%" BORDERCOLOR="#000000" FRAME="BELOW" RULES="ROWS" >
+<caption>&nbsp;</caption>
+
+<tr VALIGN=TOP>
+<th WIDTH="50%">
+<h4>
+Grammar</h4>
+</th>
+
+<th WIDTH="50%">
+<h4>
+Explanation</h4>
+</th>
+</tr>
+
+<tr VALIGN=TOP>
+<td WIDTH="50%">
+<div CLASS="code" STYLE="margin-left: 0cm">
+<pre><tt>identifier = "[a-zA-Z_][a-zA-Z0-9_]*"
+idlist: identifier "\," idlist
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; | identifier</tt></pre>
+</div>
+</td>
+
+<td WIDTH="50%">Recognizes a comma separated list of identifiers. The list
+can not be empty.</td>
+</tr>
+
+<tr VALIGN=TOP>
+<td WIDTH="50%">
+<div CLASS="code" STYLE="margin-left: 0cm">
+<pre><tt>comment: "/\*" insideComment "\*/"
+insideComment: "." insideComment
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; | comment insideComment
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; |&nbsp;</tt></pre>
+</div>
+</td>
+
+<td WIDTH="50%">Recognizes nested c like comments.</td>
+</tr>
+
+<tr VALIGN=TOP>
+<td WIDTH="50%">
+<div CLASS="code" STYLE="margin-left: 0cm">
+<pre><tt>identifier = "[a-zA-Z_][a-zA-Z0-9_]*"
+
+Declaration: type idlist "\;"
+
+type: "float"
+&nbsp;&nbsp;&nbsp; | "int"
+&nbsp;&nbsp;&nbsp; | "long"
+
+idlist: identifier "\," idlist
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; | identifier&nbsp;</tt></pre>
+</div>
+</td>
+
+<td WIDTH="50%">A very small fraction of a c grammar, that recognizes the
+declaration of variables.</td>
+</tr>
+</table>
+
+<p><a href="#Contents">Return to Contents</a>
+<center>
+<p><img SRC="blurulr6.gif" NAME="Imagen10" BORDER=0 height=5 width=640 align=BOTTOM></center>
+
+<h2 STYLE="margin-top: 0cm; margin-bottom: 0cm">
+<a NAME="precedence"></a>Precedence and Associativity</h2>
+
+<div CLASS="parrafo-con-sangria">Some grammars may be ambiguous, that is
+an input text can be recognized in more than one way. Consider the following
+example:</div>
+
+<div CLASS="code">
+<blockquote>
+<pre><tt>expr: expr "\+" expr
+&nbsp;&nbsp;&nbsp; | expr "\-" expr
+&nbsp;&nbsp;&nbsp; | expr "\*" expr
+&nbsp;&nbsp;&nbsp; | expr "\/" expr
+&nbsp;&nbsp;&nbsp; | "[0-9]+"</tt></pre>
+</blockquote>
+</div>
+
+<div CLASS="parrafo-con-sangria">This grammar recognizes a calculator like
+grammar. However, consider the following input:</div>
+
+<blockquote>
+<pre CLASS="code"><tt>1+2*3</tt></pre>
+</blockquote>
+
+<div CLASS="parrafo-con-sangria">The grammar can recognize the input in
+two ways:</div>
+
+<table BORDER=0 CELLSPACING=0 CELLPADDING=4 WIDTH="100%" >
+<caption>&nbsp;</caption>
+
+<tr VALIGN=TOP>
+<td WIDTH="50%">
+<center><img SRC="Expr1.gif" NAME="Derivation Tree 1" ALT="Derivation Tree 1" BORDER=0 height=284 width=304 align=BOTTOM>
+<p>Derivation Tree 1</center>
+</td>
+
+<td WIDTH="50%">
+<center><img SRC="Expr2.gif" NAME="Derivation Tree 2" ALT="Derivation Tree 2" BORDER=0 height=284 width=302 align=BOTTOM>
+<p>Derivation Tree 2</center>
+</td>
+</tr>
+</table>
+
+<br>&nbsp;
+
+<p CLASS="parrafo-con-sangria">Note that with either derivation, the calculated
+value would be different. In the most common case, we would want only the
+first derivation tree, that is multiplication and division is performed
+before addition and subtraction. So what we need is a way to specify multiplication
+and division have more priority, or less precedence. In claire this is
+done adding a number in the corresponding rule. Thus the modified grammar
+would be:
+<blockquote>
+<pre CLASS="code"><tt>expr: expr "\+" expr 100 // The number 100 represents the precedence
+&nbsp;&nbsp;&nbsp; | expr "\-" expr 100 // Again 100, because - has the same precedence as +
+&nbsp;&nbsp;&nbsp; | expr "\*" expr 50 // A number less than 100 represents less precedence, or more priority
+&nbsp;&nbsp;&nbsp; | expr "\/" expr 50 // Again 50, because / has the same precedence as *
+&nbsp;&nbsp;&nbsp; | "[0-9]+"</tt></pre>
+</blockquote>
+
+<div CLASS="parrafo-con-sangria">Note there can be any number of precedence
+levels. For example if we introduced the power operator, it would have
+less precedence than * and /. Also note that the numbers are arbitrary.
+It is only enough to specify one number greater than the other.</div>
+
+<div CLASS="parrafo-con-sangria">Now, consider the following input:</div>
+
+<blockquote>
+<pre CLASS="code"><tt>1-2+3</tt></pre>
+</blockquote>
+
+<div CLASS="parrafo-con-sangria">Since - and + have the same precedence,
+either one can be done first. This could produce the following derivations:</div>
+
+<table BORDER=0 CELLSPACING=0 CELLPADDING=4 WIDTH="100%" >
+<caption>&nbsp;</caption>
+
+<tr VALIGN=TOP>
+<td WIDTH="50%">
+<center><img SRC="Expr3.gif" NAME="Derivation Tree 3" ALT="Derivation Tree 3" BORDER=0 height=284 width=304 align=BOTTOM>
+<p>Derivation Tree 3</center>
+</td>
+
+<td WIDTH="50%">
+<center><img SRC="Expr4.gif" NAME="Derivation Tree 4" ALT="Derivation Tree 4" BORDER=0 height=284 width=302 align=BOTTOM>
+<p>Derivation Tree 4</center>
+</td>
+</tr>
+</table>
+
+
+<p CLASS="parrafo-con-sangria">The same would happen with other examples
+such as:
+<blockquote>
+<pre CLASS="code"><tt>1+2+3&nbsp;
+1+2-3
+1-2-3&nbsp;
+1*2*3&nbsp;
+1*2/3&nbsp;
+1/2*3&nbsp;
+1/2/3</tt></pre>
+</blockquote>
+
+<div CLASS="parrafo-con-sangria">Here, it is not needed to give priority
+to one operator over the other, because it would lead to wrong calculations.
+What is needed, is to evaluate from left to right, that is to do the left
+most operation first. This is known as left associativity. Therefore, the
+desired result is given by tree 4. To do this, we add a %left to the rule
+that has left associativity and %right to the rule that has right associativity.
+Therefore our grammar would be:</div>
+
+<blockquote>
+<pre CLASS="code"><tt>expr: expr "\+" expr %left 100 // the %left tells the rule has left associativity&nbsp;
+&nbsp;&nbsp;&nbsp; | expr "\-" expr %left 100&nbsp;
+&nbsp;&nbsp;&nbsp; | expr "\*" expr %left 50&nbsp;
+&nbsp;&nbsp;&nbsp; | expr "\/" expr %left 50&nbsp;
+&nbsp;&nbsp;&nbsp; | "[0-9]+"</tt></pre>
+</blockquote>
+
+<div CLASS="parrafo-con-sangria">An example of an operator with right associativity
+is the assignment operator in C. The following input:</div>
+
+<blockquote>
+<pre CLASS="code"><tt>a=b=c=d;</tt></pre>
+</blockquote>
+
+<div CLASS="parrafo-con-sangria">Is evaluated right most first. That is:</div>
+
+<blockquote>
+<pre CLASS="code"><tt>a=(b=(c=d));</tt></pre>
+</blockquote>
+<a href="#Contents">Return to Contents</a>
+<center>
+<p><img SRC="blurulr6.gif" NAME="Imagen11" BORDER=0 height=5 width=640 align=BOTTOM></center>
+
+<h2 STYLE="margin-top: 0cm; margin-bottom: 0cm">
+<a NAME="actions"></a>Semantic actions</h2>
+
+<div CLASS="parrafo-con-sangria"><tt><font face="times, serif">So far,
+we have a way to recognize LR(1) languages. However, it is needed to perform
+some actions associated with the language. In the calculator example, we
+have a grammar that can recognize the input of a calculator. However, we
+probably want the calculator to calculate.</font></tt></div>
+
+<div CLASS="parrafo-con-sangria"><tt><font face="times, serif">Each rule
+can have an action associated with it. This action is going to be executed
+once the rule is fully recognized. The action is just code in the desired
+language inside braces. For example:</font></tt></div>
+
+<blockquote>
+<pre CLASS="code"><tt>list: list "[aeiou]"&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; { System.out.println("A vocal was recognized"); }&nbsp;
+&nbsp;&nbsp;&nbsp; | list "[a-z]-[aeiou]" { System.out.println("A consonant was recognized"); }
+&nbsp;&nbsp;&nbsp; |</tt></pre>
+</blockquote>
+
+<div CLASS="parrafo-con-sangria"><tt><font face="times, serif">This grammar
+written for a java parser, will print "A vocal was recognized" for each
+vocal found and "A consonant was recognized" for any other character.</font></tt></div>
+
+<div CLASS="parrafo-con-sangria"><tt><font face="times, serif">Note that
+in the following grammar</font></tt></div>
+
+<br>&nbsp;
+<blockquote>
+<pre CLASS="code"><tt>list: "[aeiou]" list&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; { System.out.println("A vocal was recognized"); }&nbsp;
+&nbsp;&nbsp;&nbsp; | "[a-z]-[aeiou]" list { System.out.println("A consonant was recognized"); }&nbsp;
+&nbsp;&nbsp;&nbsp; |</tt></pre>
+</blockquote>
+
+<div CLASS="parrafo-con-sangria"><tt><font face="times, serif">The report
+will be done in reverse order. To explain this, consider the following
+input:</font></tt></div>
+
+<blockquote>
+<pre CLASS="code"><tt>abc</tt></pre>
+</blockquote>
+
+<div CLASS="parrafo-con-sangria"><tt><font face="times, serif">This would
+lead to the following derivation tree:</font></tt></div>
+
+<center><img SRC="Code.gif" NAME="Code derivation Tree" ALT="Code derivation Tree" BORDER=0 height=291 width=306 align=BOTTOM></center>
+
+
+<p CLASS="parrafo-con-sangria"><tt><font face="times, serif">The code is
+<blink>always</blink>
+executed from bottom up. This means the code associated with the </font></tt>second
+rule, that was used to derive the c, will be executed first, therefore
+printing a consonant report. Then the code of the second rule, used for
+b will be executed, reporting another consonant, and at last the code of
+the first rule used to derive A will be executed reporting a vocal.
+
+<p CLASS="parrafo-con-sangria">Note that in the first grammar, even though
+the code is executed from bottom up, the report is correct because the
+derivation tree is different.
+<p><a href="#Contents">Return to Contents</a>
+<center>
+<p><img SRC="blurulr6.gif" NAME="Imagen12" BORDER=0 height=5 width=640 align=BOTTOM></center>
+
+<h2 STYLE="margin-top: 0cm; margin-bottom: 0cm">
+<a NAME="values"></a><tt><font face="times, serif">Data types and semantic
+values</font></tt></h2>
+
+<div CLASS="parrafo-con-sangria"><tt><font face="times, serif">Each symbol
+in a grammar has a semantic value associated with it. This semantic value
+can be used inside the semantic action. Also this value has a data type
+associated with it which is language dependent.</font></tt></div>
+
+<div CLASS="parrafo-con-sangria"><tt><font face="times, serif">For regular
+expressions, the value is always the string of the recognized input, and
+the data type is string. To read the value associated with a symbol, use
+$1, $2, $3, $4, ... for the first, second, third, forth, ... symbol in
+a rule respectively.</font></tt></div>
+
+<blockquote>
+<pre CLASS="code"><tt>list: "[aeiou]" list&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; { System.out.println("A vocal " + $1 + " was recognized"); }&nbsp;
+&nbsp;&nbsp;&nbsp; | "[a-z]-[aeiou]" list { System.out.println("A consonant " + $1 + " was recognized"); }&nbsp;
+&nbsp;&nbsp;&nbsp; |</tt></pre>
+</blockquote>
+
+<div CLASS="parrafo-con-sangria"><tt><font face="times, serif">Here, $1
+was used to retrieve the recognized character in both rules. It was used
+$1 because the regular expression was the first symbol in both rules.</font></tt></div>
+
+<div CLASS="parrafo-con-sangria"><tt><font face="times, serif">To assign
+a value to a non terminal symbol, you must first specify the data type
+of the non terminal. This is done appending a string closed by &lt;> before
+the non terminal in the rule declaration. To assign a value to the non
+terminal use $$. The following example reconstructs a text string of vocals
+and consonants</font></tt></div>
+
+<blockquote>
+<pre CLASS="code"><tt>&lt;String> list: "[aeiou]" list { $$ = $1 + $2; } // Concatenate the recognized character in $1, with&nbsp;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; // what was allready recognized by previows list&nbsp;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; // in $2. The value of the recognized list $$ will&nbsp;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; // be the concatenation&nbsp;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; | "[a-z]-[aeiou]" list { $$ = $1 + $2; }&nbsp;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; | { $$ = ""; }&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; // The value of the list will be the empty string</tt></pre>
+</blockquote>
+
+<div CLASS="parrafo-con-sangria"><tt><font face="times, serif">Now we can
+make the calculator calculate:</font></tt></div>
+
+<br>&nbsp;
+<blockquote>
+<pre CLASS="code"><tt>&lt;int> expr: expr "\+" expr %left 100 { $$ = $1 + $3; } // use $1 the value of the left of + and $3&nbsp;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; // the value of the right of +. $2 would&nbsp;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; // always be + and we dont need it.&nbsp;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; // the result of the expression is the sum of&nbsp;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; // those results&nbsp;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; | expr "\-" expr %left 100 { $$ = $1 - $3; }&nbsp;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; | expr "\*" expr %left 50 { $$ = $1 * $3; }&nbsp;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; | expr "\/" expr %left 50 { $$ = $1 / $3; }&nbsp;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; | "(" expr ")" { $$ = $2; }&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; // if we use () the result is the result of&nbsp;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; // what is inside the parenthesis.
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; | "[0-9]+" { $$ = Integer.parseInt($1); }&nbsp;&nbsp;&nbsp; // Just convert the recognized text to a number</tt></pre>
+</blockquote>
+<a href="#Contents">Return to Contents</a>
+<center>
+<p><img SRC="blurulr6.gif" NAME="Imagen13" BORDER=0 height=5 width=640 align=BOTTOM></center>
+
+<h2 STYLE="margin-top: 0cm; margin-bottom: 0cm">
+<a NAME="macros"></a><tt><font face="times, serif">Macros</font></tt></h2>
+
+<div CLASS="parrafo-con-sangria"><tt><font face="times, serif">The concept
+of macros is something exclusive and new in Claire. The purpose of macros
+is to reuse rules. Consider the case when you have a grammar in where a
+list of parameters, a list of instructions, a list of methods, an a list
+of classes coexist. In traditional tools, you would have to write each
+list separately. However, in Claire, you can define a macro named list,
+and reuse it for every list you have. For example:</font></tt></div>
+
+<div CLASS="code">
+<blockquote>
+<pre><tt>&lt;List> list(x): list(x) x
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; $1.add($2);
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; $$ = $1;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; |
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; $$ = new ArrayList();
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }</tt></pre>
+</blockquote>
+</div>
+
+<div CLASS="parrafo-con-sangria"><tt><font face="times, serif">Now, with
+this definition of list, you can define a list of anything at all. For
+example, further in the same grammar you could write:</font></tt></div>
+
+<br>&nbsp;
+<blockquote>
+<pre CLASS="code"><tt>file: list(class)
+identifier = "[a-zA-Z_][a-zA-Z0-9_]*"
+
+class: "class" identifier "\{" list(method) "\}"
+method: type identifier "\(" list(parameter) "\)"
+
+...</tt></pre>
+</blockquote>
+
+<div CLASS="parrafo-con-sangria"><tt><font face="times, serif">As you can
+see, the macro list can be used as many times as you want. For each time
+it is used, it will replace the x with the given parameter. A macro can
+have as many parameters as desired, separated by comma, and each parameter
+can be replaced by any right hand, including a list of symbols, %right,
+$left, precedence, empty list, etc... Also, it is possible to overload
+macros, there is the possibility of defining a list with one parameter
+and a list with two parameters, say if you wanted to include a separator
+or terminator, and claire would select the appropriate macro. For example:</font></tt></div>
+
+<blockquote>
+<pre CLASS="code"><tt>&lt;List> list(x): list(x) x
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; $1.add($2);
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; $$ = $1;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; |
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; $$ = new ArrayList();
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }</tt></pre>
+
+<pre CLASS="code"><tt>&lt;List> list(x,sep): list(x) x sep
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; $1.add($2);
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; $$ = $1;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; |
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; $$ = new ArrayList();
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }</tt></pre>
+</blockquote>
+
+<div CLASS="parrafo-con-sangria"><tt><font face="times, serif">Another
+example would be:</font></tt></div>
+
+<br>&nbsp;
+<blockquote>
+<pre CLASS="code"><tt>&lt;List> list(x): list(x,)
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; $$ = $1;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }
+
+&lt;List> list(x,sep): list(x) x sep
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; $1.add($2);
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; $$ = $1;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; |
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; $$ = new ArrayList();
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }</tt></pre>
+</blockquote>
+
+<div CLASS="parrafo-con-sangria"><tt><font face="times, serif">Which is
+equivalent to the example above.</font></tt></div>
+<a href="#Contents">Return to Contents</a>
+<center>
+<p><img SRC="blurulr6.gif" NAME="Imagen14" BORDER=0 height=5 width=640 align=BOTTOM></center>
+
+<h2 STYLE="margin-top: 0cm; margin-bottom: 0cm">
+<a NAME="white"></a><tt><font face="times, serif">White spaces</font></tt></h2>
+
+<div CLASS="parrafo-con-sangria"><tt><font face="times, serif">Consider
+the case where you have comments or white spaces that you want to ignore.
+You would have to put them every where in your grammar. Claire can do this
+task for you. If you specify a rule with a left hand named "white", then
+claire will put the white symbol behind every regular expression, making
+it easy to ignore white spaces. Of course, there are times where it is
+not desired the behavior. To avoid adding a white behind a regular expression,
+just enclose it with [ ]</font></tt></div>
+
+<div CLASS="parrafo-con-sangria"><tt><font face="times, serif">For example,
+if we have a working calculator and want to ignore tabulators, white spaces,
+c++ like comments and carriage return,</font></tt></div>
+
+<div CLASS="code">
+<blockquote>
+<pre><tt>&lt;int> expr: expr "\+" expr %left 100 { $$ = $1 + $3; }
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; | expr "\-" expr %left 100 { $$ = $1 - $3; }
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; | expr "\*" expr %left 50 { $$ = $1 * $3; }&nbsp;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; | expr "\/" expr %left 50 { $$ = $1 / $3; }&nbsp;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; | "(" expr ")" { $$ = $2; }&nbsp;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; | "[0-9]+" { $$ = Integer.parseInt($1); }
+
+white: whiteSpace white // I am going to add a list of white spaces
+&nbsp;&nbsp;&nbsp;&nbsp; |&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; // behind every regular expression. This works for
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; // most cases
+
+[ // It does not make much sense to add a white behind
+&nbsp; // white spaces. Therefore, we protect them with [ ]</tt></pre>
+</blockquote>
+</div>
+
+<blockquote>
+<pre CLASS="code"><tt>&nbsp; whiteSpace: "[ \t\r\n]"&nbsp;&nbsp; // a white space may be one of the following:
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; // a space, tab, return, ...
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; | "//[^\r\n]*"&nbsp; // a // c like comment
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; | nestedComment // a c++ /* ... */ nested comment
+&nbsp;&nbsp;
+&nbsp; nestedComment: "/\*" insideComment "\*/"
+
+&nbsp; insideComment: "." insideComment
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; | nestedComment insideComment
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; |
+]</tt></pre>
+
+<pre></pre>
+</blockquote>
+
+<div CLASS="parrafo-con-sangria"><tt><font face="times, serif">On a more
+advanced an rarely needed feature, inside [ ] can be another white, that
+applies only to what is inside the brackets, and is independent of any
+other white. Also [ ] can be nested.</font></tt></div>
+<a href="#Contents">Return to Contents</a>
+<center>
+<p><img SRC="blurulr6.gif" NAME="Imagen15" BORDER=0 height=5 width=640 align=BOTTOM></center>
+
+<h2 STYLE="margin-top: 0cm; margin-bottom: 0cm">
+<a NAME="positions"></a>Symbol positions</h2>
+
+<div CLASS="parrafo-con-sangria">It is also useful sometimes to know exactly
+where a symbol starts and ends in an input string. Along with the semantic
+value of symbols, Claire provides a built in, read only values for each
+symbol that specify the position inside a string. These values can also
+be used inside a semantic action. The values can be used inside the code
+using the following variables:
+<p>if x is the number identifying a symbol inside a rule, then
+<br>&nbsp;
+<table BORDER CELLSPACING=0 WIDTH="100%" NOSAVE >
+<tr NOSAVE>
+<td NOSAVE>
+<center>
+<h4>
+Variable</h4></center>
+</td>
+
+<td>
+<center>
+<h4>
+Description</h4></center>
+</td>
+</tr>
+
+<tr>
+<td>
+<pre>$x_line</pre>
+</td>
+
+<td>gets the line where the symbol x begins</td>
+</tr>
+
+<tr>
+<td>
+<pre>$x_lineStart</pre>
+</td>
+
+<td>gets the line where the symbol x begins</td>
+</tr>
+
+<tr>
+<td>
+<pre>$x_lineEnd</pre>
+</td>
+
+<td>gets the line where the symbol x ends</td>
+</tr>
+
+<tr>
+<td>
+<pre>$x_col</pre>
+</td>
+
+<td>gets the column or row where the symbol x starts</td>
+</tr>
+
+<tr>
+<td>
+<pre>$x_colStart</pre>
+</td>
+
+<td>gets the column or row where the symbol x starts</td>
+</tr>
+
+<tr>
+<td>
+<pre>$x_colEnd</pre>
+</td>
+
+<td>gets the column or row where the symbol x ends</td>
+</tr>
+
+<tr NOSAVE>
+<td NOSAVE>
+<pre>$x_char</pre>
+</td>
+
+<td>gets the character at where the symbol x starts</td>
+</tr>
+
+<tr>
+<td>
+<pre>$x_charStart</pre>
+</td>
+
+<td>gets the character at where the symbol x starts</td>
+</tr>
+
+<tr NOSAVE>
+<td>
+<pre>$x_charEnd</pre>
+</td>
+
+<td NOSAVE>gets the character at where the symbol x ends</td>
+</tr>
+</table>
+
+<p>For example, the following allows a calculator to print error messages
+where an input is not recognized:
+<div CLASS="code">
+<blockquote>
+<pre><tt>&lt;int> expr: expr "\+" expr %left 100 { $$ = $1 + $3; }
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; | expr "\-" expr %left 100 { $$ = $1 - $3; }
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; | expr "\*" expr %left 50 { $$ = $1 * $3; }&nbsp;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; | expr "\/" expr %left 50 { $$ = $1 / $3; }&nbsp;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; | "(" expr ")" { $$ = $2; }&nbsp;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; | "[0-9]+" { $$ = Integer.parseInt($1); }
+
+white: whiteSpace white // I am going to add a list of white spaces
+&nbsp;&nbsp;&nbsp;&nbsp; |&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; // behind every regular expression. This works for
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; // most cases
+&nbsp;&nbsp;&nbsp;&nbsp; | error&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; System.err.println("error(" + $1_line +", " + $1_col +&nbsp;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; "): unrecognized input " + $1);
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }
+
+[ // It does not make much sense to add a white behind
+&nbsp; // white spaces. Therefore, we protect them with [ ]</tt></pre>
+</blockquote>
+</div>
+
+<blockquote>
+<pre CLASS="code"><tt>&nbsp; whiteSpace: "[ \t\r\n]"&nbsp;&nbsp; // a white space may be one of the following:
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; // a space, tab, return, ...
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; | "//[^\r\n]*"&nbsp; // a // c like comment
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+
+&nbsp; error: "." error { $$ = $1 + $2; }
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; | "."&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; { $$ = $1; }
+]</tt></pre>
+</blockquote>
+</div>
+Note that error will be recognized only when nothing else is recognized,
+and can be recognized every where.
+<p><a href="#Contents">Return to Contents</a>
+<center>
+<p><img SRC="blurulr6.gif" NAME="Imagen15" BORDER=0 height=5 width=640 align=BOTTOM></center>
+
+<h2 STYLE="margin-top: 0cm; margin-bottom: 0cm">
+<a NAME="other"></a>Other documents</h2>
+<a href="ClaireJava.html">The Java Translator User's Manual</a>
+<p><a href="#Contents">Return to Contents</a>
+<p><img SRC="blurulr6.gif" NAME="Imagen15" BORDER=0 height=5 width=640 align=BOTTOM>
+<h2>
+<a NAME="Examples"></a>Examples</h2>
+<a href="/home/Paul/Claire/example/simpleCalc/Claire/Calc.clr">A simple
+calculator</a>
+<br><a href="/home/Paul/Claire/example/superCalc/NormalCalc.clr">A more
+sofisticated calculator with prefix, infix and postfix notation</a>
+<br><a href="/home/Paul/Claire/example/superCalc/MacroCalc.clr">A more
+sofisticated calculator with prefix, infix and postfix notation using macros</a>
+<br><a href="/home/Paul/Claire/ve/usb/Claire/regexp/syntax/Parser.clr">The
+regular expressions analizer (used to parse the regular expresions in Claire
+)</a>
+<br><a href="/home/Paul/Claire/ve/usb/Claire/translator/java/JAVAParser.clr">The
+Java Translator analizer (used to parse the First Section of the Java Translator
+)</a>
+<br><a href="/home/Paul/Claire/ve/usb/Claire/contextFree/syntax/Parser.clr">The
+Claire analizer (used to parser Claire's input files)</a>
+<br>&nbsp;
+</body>
+</html>
