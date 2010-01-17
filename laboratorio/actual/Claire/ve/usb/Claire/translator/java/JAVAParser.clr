@@ -1,0 +1,300 @@
+/**********************************************************************
+ * Claire a parser generator.                                         *
+ * Copyright (C) 1999  Paul Pacheco <93-25642@ldc.usb.ve>             *
+ *                                                                    *
+ * This library is free software; you can redistribute it and/or      *
+ * modify it under the terms of the GNU Lesser General Public         *
+ * License as published by the Free Software Foundation; either       *
+ * version 2 of the License, or (at your option) any later version.   *
+ *                                                                    *
+ * This library is distributed in the hope that it will be useful,    *
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of     *
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU  *
+ * Lesser General Public License for more details.                    *
+ *                                                                    *
+ * You should have received a copy of the GNU Lesser General Public   *
+ * License along with this library; if not, write to the Free         *
+ * Software Foundation, Inc., 59 Temple Place, Suite 330,             *
+ * Boston, MA  02111-1307  USA                                        *
+ *                                                                    *
+ * Please contact Paul Pacheco <93-25642@ldc.usb.ve> to submit any    *
+ * suggestion or bug report.                                          *
+ **********************************************************************/
+
+/*
+ * $Id: JAVAParser.clr,v 1.2 1999/11/07 12:18:43 Paul Exp $
+ *
+ * the changes to this file are
+ *
+ * $Log: JAVAParser.clr,v $
+ * Revision 1.2  1999/11/07 12:18:43  Paul
+ * Moved the runtime library to the java directory
+ *
+ * Revision 1.1  1999/11/07 11:46:03  Paul
+ * Moved the java translator files into the java package
+ *
+ * Revision 1.2  1999/11/06 01:44:26  Paul
+ * Improved the translator, now a template file is used to make it
+ * easier to modify.
+ *
+ * Revision 1.1.1.1  1999/10/31 07:47:02  Paul
+ * Imported Claire files
+ *
+ * Revision 1.4  1999/10/13 02:06:10  Paul
+ * Better output of error messages
+ *
+ * Revision 1.3  1999/10/09 01:59:26  Paul
+ * *** empty log message ***
+ *
+ * Revision 1.2  1999/09/09 09:53:55  Paul
+ * Added some cvs comments
+ *
+ */
+
+package ve.usb.Claire.translator.java;
+import ve.usb.Claire.*;
+/**
+ * JAVAParser parses the language dependant part of a grammar
+ * for java output
+ * @version     $Revision: 1.2 $
+ * @author      Paul Pacheco <93-25642@ldc.usb.ve>
+ * @since       JDK1.2
+ */
+
+class JAVAParser
+{
+      String imports="";
+      String packages="";
+      String declaration="";
+      
+      String className="Parser";
+
+      String code="";
+      
+      public static final String newLine= System.getProperty("line.separator");
+      
+      private Unit unit;
+      
+      JAVAParser()
+      {
+      }
+      
+      JAVAParser(Unit unit)
+      {
+	 this.unit = unit;
+      }
+}
+
+JavaLanguage: package_spec import_spec class_spec classBody
+{
+   packages=$1;
+   imports=$2;
+   declaration=$3;
+   code=$4;
+}
+
+/* Package specification */
+
+';':";"
+
+<String>package_spec: "package" package_id ';'
+{
+	$$ = "package "+ $2 + ";" + newLine;
+}
+| /* epsilon */
+{
+	$$ = "";
+}
+
+<String> package_id: package_id "\." ID
+{
+	$$ = $1 + "." + $3;
+}
+| ID
+{
+	$$ =  $1;
+}
+
+
+/* Import specification */
+<String>import_spec: import_stat import_spec
+{
+	$$ = $1 + $2;
+}
+| /* epsilon */
+{
+	$$ = "";
+}
+
+<String> import_stat: "import" package_id staropt ';'
+{
+	$$ = "import " + $2 + $3 +";" + newLine;
+}
+
+<String> staropt: "\.\*"
+{
+	$$ = $1;
+}
+|
+{
+	$$ = "";
+}
+
+/* Class Specification */
+
+<String> class_spec: classDecl
+{
+	$$ = $1;
+}
+|
+{
+	$$ = "class "+className+" implements ve.usb.Claire.runtime.java.Language, ve.usb.Claire.runtime.java.ClaireScanner"+newLine;
+}
+
+
+
+<String>access: "public"
+{
+	$$= $1;
+}
+
+<String> instance: "final|abstract"
+{
+	$$ = $1;
+}
+
+
+<String> classOptions: instance access
+{
+	$$ = $1 +" "+ $2;
+}
+| access instance
+{
+	$$ = $1 +" "+ $2;
+}
+| instance
+{
+	$$ = $1;
+}
+| access
+{
+	$$ = $1;
+}
+|
+{
+ 	$$ = "";
+}
+
+<String> extendsList: "extends" package_id
+{
+	$$ = "extends " + $2;
+}
+
+<String> interfaceList: package_id "\," interfaceList
+{
+	$$ = $1 + ", " + $3;
+}
+| package_id
+{
+	$$ = $1;
+}
+	
+<String> implementsList: "implements" interfaceList
+{
+	$$ = "implements ve.usb.Claire.runtime.java.Language, ve.usb.Claire.runtime.java.ClaireScanner, " + $2;
+}
+|
+{
+	$$ = "implements ve.usb.Claire.runtime.java.Language, ve.usb.Claire.runtime.java.ClaireScanner";
+}
+
+<String> classParents: extendsList implementsList
+{
+	$$ = $1 + " " + $2;
+}	
+| implementsList
+{
+	$$ = $1;
+}
+
+
+<String> classDecl: classOptions "class" ID classParents
+{
+	className=$3;
+	$$ = $1 + " class " + $3 + " " + $4;
+}
+
+<String> classBody: ACTION
+{
+	$$ = $1;
+}
+|
+{
+	$$ = "";
+}
+
+<String> ACTION: code white
+{
+	$$ = $1;
+}
+/*
+ *  espacios en blanco
+ */
+
+ID= "[_a-zA-Z][0-9_a-zA-Z]*"
+
+white: white whiteSymbol
+| error
+{
+	unit.error("(" + $1_line + " ," + $1_col+ ")" + " Unexpected text" + $1);
+}
+|
+
+
+[
+	whiteSymbol: "[\r\n \t\f]"
+	| comment
+	| "//[^\r\n]*"
+	
+	<String> code: "\{" insideCode "\}"
+	{		
+		$$ = $2 ;
+	}
+
+
+	'.'="."
+	
+	<String> insideCode: insideCode code
+	{
+		$$ = $1 +"{" + $2 + "}";
+	}
+	| insideCode '.'
+	{
+		$$ = $1 + $2;
+	}
+	| insideCode "\\[\{\}]"
+	{
+		$$ = $1 + $2.charAt(1);
+	}
+	|
+	{
+		$$ = "";
+	}
+
+	comment: "/\*" insideComment "\*/"
+
+	insideComment: insideComment '.'
+	| insideComment comment
+	|
+
+	<String> error: error '.'
+{
+	$$ = $1 + $2;
+}
+	| '.'
+{
+	$$ = $1;
+}
+
+]
+

@@ -1,0 +1,570 @@
+/**********************************************************************
+ * Claire a parser generator.                                         *
+ * Copyright (C) 1999  Paul Pacheco <93-25642@ldc.usb.ve>             *
+ *                                                                    *
+ * This library is free software; you can redistribute it and/or      *
+ * modify it under the terms of the GNU Lesser General Public         *
+ * License as published by the Free Software Foundation; either       *
+ * version 2 of the License, or (at your option) any later version.   *
+ *                                                                    *
+ * This library is distributed in the hope that it will be useful,    *
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of     *
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU  *
+ * Lesser General Public License for more details.                    *
+ *                                                                    *
+ * You should have received a copy of the GNU Lesser General Public   *
+ * License along with this library; if not, write to the Free         *
+ * Software Foundation, Inc., 59 Temple Place, Suite 330,             *
+ * Boston, MA  02111-1307  USA                                        *
+ *                                                                    *
+ * Please contact Paul Pacheco <93-25642@ldc.usb.ve> to submit any    *
+ * suggestion or bug report.                                          *
+ **********************************************************************/
+
+/*
+ * $Id: Parser.clr,v 1.1 1999/11/07 11:45:11 Paul Exp $
+ *
+ * the changes to this file are
+ *
+ * $Log: Parser.clr,v $
+ * Revision 1.1  1999/11/07 11:45:11  Paul
+ * Moved the syntax of Claire files to this package
+ *
+ * Revision 1.3  1999/11/04 05:37:33  Paul
+ * Improved expansion of alias inside Regular Expressions and Code
+ *
+ * Revision 1.2  1999/10/31 08:42:07  Paul
+ * Added quoted symbols
+ *
+ * Revision 1.1.1.1  1999/10/31 07:47:02  Paul
+ * Imported Claire files
+ *
+ * Revision 1.3  1999/10/13 02:05:39  Paul
+ * Improved the parser to better recognizing of java like languages
+ *
+ * Revision 1.2  1999/09/09 09:53:55  Paul
+ * Added some cvs comments
+ *
+ */
+
+package ve.usb.Claire.contextFree.syntax;
+import java.util.*;
+import java.io.*;
+import ve.usb.Claire.*;
+import ve.usb.Claire.contextFree.*;
+import ve.usb.Claire.contextFree.symbol.*;
+
+/**
+ * Parser parses an input file, and builds a Unit object whitch contains
+ * the grammar and several options
+ * @version     $Revision: 1.1 $
+ * @author      Paul Pacheco <93-25642@ldc.usb.ve>
+ * @since       JDK1.2
+ */
+
+public class Parser
+{
+
+		/**
+		 * Creates a parser Object, ready to parse any input
+		 */
+		public Parser()
+		{
+		}
+
+		/**
+		 * Parses an input file, and fills up the Unit structure
+		 * @param in the input from where the grammar is to be read
+		 * @param unit the unit to be filled
+		 * @see ve.usb.Claire.Unit Unit
+		 */
+		public void parse(Reader in, Unit unit) throws Exception
+		{
+			this.unit=unit;
+			this.grammar= new Grammar();
+		  
+			whiteId=0;
+			regexpOrder=0;
+		  
+			whiteStack= new Stack();
+		  
+			whiteStack.push(new Integer(whiteId++));
+		  
+			parse(in);
+		  
+			this.unit.grammar(grammar);
+		  
+		}
+
+		/**
+		 * the unit structure to be filled
+		 * @see ve.usb.Claire.Unit Unit
+		 */
+		private Unit unit;
+
+		/**
+		 * the grammar taken out of the input file
+		 * @see ve.usb.Claire.contextFree.Grammar Grammar
+		 */
+		private Grammar grammar = new Grammar();
+		
+		private int regexpOrder=0;
+
+		private int whiteId=0;
+		private Stack whiteStack;		
+}
+
+input: languageDependant
+
+languageDependant: JavaLikeLanguage
+{
+	unit.languageDependant($1);
+}
+| AnyLanguage optionSecc grammar
+{
+	unit.languageDependant($1);
+}
+| AnyLanguage grammar
+{
+	unit.languageDependant($1);
+}
+
+<String>JavaLikeLanguage: JavaLikeStatement JavaLikeLanguage
+{
+	$$ = $1 + $2;
+}
+| optionSecc grammar
+{
+	$$ = "";
+}
+| grammar
+{
+	$$ = "";
+}
+
+JavaLikeStatement:
+[ "[;#][^\n\r]*|\.|\,|\*" ] white {$$ = $1+$2; }
+| code white  { $$ = $1 + $2; }
+| TemplDecl   { $$ = $1; }
+| nonCommentID white { $$ = $1 + $2; }
+
+COMMA = "\,"
+
+<String> TemplDecl: ["template"] white [ nestedCode("<", ">") ] white
+{
+	$$ = $1 + $2 + $3 + $4;
+}
+
+LANG = "%lang"
+
+<String> AnyLanguage: LANG ID ACTION
+{
+	unit.language($2);
+	$$ = $3;
+}
+| LANG ACTION
+{
+	$$ = $3;
+}
+
+
+optionSecc: option optionSecc
+| option
+
+option:
+ "%start" startList
+| "%expand" NUMBER
+{
+	unit.expansion($2);
+}
+| "%nomain"
+{
+	unit.hasMain(false);
+}
+| "%main"
+{
+	unit.hasMain(true);
+}
+
+
+startList: startList COMMA startSymbol
+| startSymbol
+
+startSymbol: symbolId
+{
+	grammar.initialSymbol($1);
+}
+| macroCall
+{
+	grammar.initialSymbol($1);
+}
+
+
+'[': "\["
+{
+	whiteStack.push(new Integer(whiteId++));	
+}
+
+']': "\]"
+{
+	whiteStack.pop();
+}
+
+grammar: nonEmptyGrammar
+| '[' nonEmptyGrammar ']' grammar
+|
+
+COLON= ":"
+
+nonEmptyGrammar: leftHand COLON rules
+{
+	Iterator iter= $3.iterator();
+	
+	while (iter.hasNext())
+	{
+		Rule rule=(Rule)iter.next();
+		rule.setLeftHand($1);
+	}
+}
+| symbolId "\=" symbol grammar
+{
+	grammar.alias($1.getName(), $3);
+}
+
+PIPE= "\|"
+
+<List> rules: nonemptySymbolList
+{
+	$$= new ArrayList();
+	$$.add($1);
+}
+| rightHand PIPE rules
+{
+	grammar.add($1);	
+	$3.add(0,$1);
+	$$ = $3;
+}
+  
+<Rule> nonemptySymbolList: symbol nonemptySymbolList
+{
+	$2.add(0,$1);
+	$$=$2;
+}
+| '[' rightHand ']' nonemptySymbolList
+{
+	Iterator iter = $2.iterator();
+	int pos=0;
+	while (iter.hasNext())
+	{
+		$4.add(pos++,(Symbol)iter.next());
+	}
+	$$=$4;
+}
+| grammar
+{
+	$$=new Rule();
+
+	grammar.add($$);
+}
+
+<Rule> rightHand: symbol rightHand
+{
+	$2.add(0,$1);
+	$$=$2;
+}
+| '[' rightHand ']' rightHand
+{
+	Iterator iter = $4.iterator();
+	while (iter.hasNext())
+	{
+		$2.add((Symbol)iter.next());
+	}
+	$$=$2;	
+}
+| 
+{
+	$$ = new Rule();
+}
+
+<Symbol> prec: NUMBER
+{
+	$$=new PrecSymbol($1);
+}
+
+<Symbol> asoc: "%left"
+{
+	$$ = new AsocSymbol(AsocSymbol.LEFT);
+}
+| "%right"
+{
+	$$ = new AsocSymbol(AsocSymbol.RIGHT);
+}
+| "%nonasoc"
+{
+	$$ = new AsocSymbol(AsocSymbol.NONASOC);
+}
+
+
+<String> ID: nonCommentID white
+{
+	$$ = $1;
+}
+
+<Symbol> symbolId: ID
+{
+	String symbolName=$1;
+
+	if (symbolName.equals("white"))
+	{
+		$$ = new WhiteSymbol(((Integer)whiteStack.peek()).intValue());
+		grammar.white($$);
+	}
+	else
+	{
+		$$ = new IDSymbol($1,null);
+	}
+}
+| quotedId white
+{
+	$$ = new IDSymbol("\'"+$1+"\'",null);
+}
+
+
+<Symbol> action: ACTION
+{
+	$$ = new CodeSymbol($1,null);
+}
+
+| type ACTION
+{
+	$$ = new CodeSymbol($2,$1);
+}	
+
+
+<Symbol> declaration: type symbolId
+{
+	$2.setType($1);
+	$$=$2;
+}
+| symbolId
+{
+	$$=$1;
+}
+
+<Symbol> macroDeclaration: macroCall
+{
+	$$=new MacroDefSymbol($1,null,unit);
+}
+| type macroCall
+{
+	$$= new MacroDefSymbol($2,$1,unit);
+}
+
+<Symbol>leftHand: declaration
+{
+	$$=$1;
+	if (grammar.initialSymbols().isEmpty())
+		grammar.initialSymbol($$);
+}
+| macroDeclaration
+{
+	$$=$1;
+}
+
+
+<List> symbolList: symbolList symbol
+{
+	$1.add($2);
+	$$=$1;
+}
+| 
+{
+	$$=new ArrayList();
+}
+
+<List> arguments: arguments COMMA symbolList
+{
+	$1.add($3);
+
+	$$=$1;
+}
+| symbolList
+{
+	List param=new ArrayList();
+	param.add($1);
+
+	$$=param;
+}
+
+<MacroSymbol> macroCall: ID "\(" arguments "\)"
+{
+	$$=new MacroSymbol($1,$3);
+}
+
+<Symbol> symbol: symbolId
+{
+	$$=$1;
+}
+| type symbolId
+{
+	$$= new CastingSymbol($2,$1);
+}
+| action
+{
+	$$=$1;
+}
+| macroCall
+{
+	$$=$1;
+}
+| type macroCall
+{
+	$$= new CastingSymbol($2,$1);
+}
+| prec
+{
+	$$ = $1;
+}
+| asoc
+{
+	$$ = $1;
+}
+| STRING
+{
+	$$ = new CommentedSymbol(new RESymbol($1,regexpOrder++),((Integer)whiteStack.peek()).intValue());
+}
+
+		
+
+<String> type: [ nestedCode("<", ">") ] white
+{
+	$$ =  $1.substring(1,$1.length()-1).trim();
+}
+
+
+/*
+ *  espacios en blanco
+ */
+
+<String> white: white ["[\r\n \t\f]"]
+{
+	$$ = $1 + $2 ;
+}
+| white comment
+{
+	$$ = $1 + $2;
+}
+| white ["//[^\r\n]*"]
+{
+	$$ = $1 + $2;
+}
+| error
+{
+	unit.error("(" + $1_line + " ," + $1_col+ ")" + " Unexpected text" + $1);
+	$$ = $1;
+}
+|
+{
+	$$ = "";
+}
+
+
+<String> STRING: nonCommentString white
+{
+	$$ = $1;
+}
+
+<String> ACTION: code white
+{
+	$$ = 	$$ =  $1.substring(1,$1.length()-1);
+}
+
+<int>NUMBER: "[0-9]+"
+{
+	try
+	{
+		$$ = Integer.parseInt($1);
+	}
+	catch (NumberFormatException e)
+	{
+		unit.error("Invalid number " + $1);		
+	}
+}
+
+
+[
+	 nonCommentID= "[_a-zA-Z][0-9_a-zA-Z]*"
+
+	 code = nestedCode("\{","\}")
+
+      quotedId=quotedText("\'")
+
+      nonCommentString = quotedText("\"")
+		
+<String> quotedText(quote): quote quotedContent(quote) quote
+   {
+      $$ = $2;
+   }
+
+<String> quotedContent(quote): quotedContent(quote) "\\."
+   {
+      $$ = $1 + $2;
+   }
+| quotedContent(quote) "[^\n\r]"
+   {
+      $$ = $1 + $2;
+   }
+|
+   {
+      $$ = "";
+   }
+      
+
+<String>nestedCode(open, close): open insideNested(open,close) close
+{
+	$$ = $1 + $2 + $3;
+}
+
+'\\'= "\\"
+
+<String> insideNested(open,close):
+insideNested(open,close) nestedCode(open,close)
+{
+	$$ = $1 + $2;
+}
+| insideNested(open,close) '.'
+{
+	$$ = $1 + $2;
+}
+| insideNested(open,close) '\\' open
+{
+	$$ = $1 + $3;
+}
+| insideNested(open,close) '\\' close
+{
+	$$ = $1 + $3;
+}
+| insideNested(open,close) '\\' '.'
+{
+	$$ = $1 + $2 + $3;
+}
+|
+{
+	$$ = "";
+}
+
+comment= nestedCode("/\*","\*\/")
+
+'.'="."
+		
+<String> error: error '.'
+{
+	$$ = $1 + $2;
+}
+| '.'
+{
+	$$ = $1;
+}
+
+]
+

@@ -1,0 +1,99 @@
+/**********************************************************************
+ * Claire a parser generator.                                         *
+ * Copyright (C) 1999  Paul Pacheco <93-25642@ldc.usb.ve>             *
+ *                                                                    *
+ * This library is free software; you can redistribute it and/or      *
+ * modify it under the terms of the GNU Lesser General Public         *
+ * License as published by the Free Software Foundation; either       *
+ * version 2 of the License, or (at your option) any later version.   *
+ *                                                                    *
+ * This library is distributed in the hope that it will be useful,    *
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of     *
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU  *
+ * Lesser General Public License for more details.                    *
+ *                                                                    *
+ * You should have received a copy of the GNU Lesser General Public   *
+ * License along with this library; if not, write to the Free         *
+ * Software Foundation, Inc., 59 Temple Place, Suite 330,             *
+ * Boston, MA  02111-1307  USA                                        *
+ *                                                                    *
+ * Please contact Paul Pacheco <93-25642@ldc.usb.ve> to submit any    *
+ * suggestion or bug report.                                          *
+ **********************************************************************/
+
+/*
+ * $Id: MacroCalc.clr,v 1.1.1.1 1999/10/31 07:47:02 Paul Exp $
+ *
+ * the changes to this file are
+ *
+ * $Log: MacroCalc.clr,v $
+ * Revision 1.1.1.1  1999/10/31 07:47:02  Paul
+ * Imported Claire files
+ *
+ * Revision 1.2  1999/09/09 09:53:55  Paul
+ * Added some cvs comments
+ *
+ */
+
+/**
+ * MacroCalc implements an example calculator using macros, that can understand
+ * prefix, infix, or postfix notation
+ * @version     $Revision: 1.1.1.1 $
+ * @author      Paul Pacheco <93-25642@ldc.usb.ve>
+ * @since       JDK1.2
+ */
+
+class MacroCalc
+
+%start initial(prefix), initial(infix), initial(postfix)
+
+
+white:[ "[\r\n\t ]+" ]
+|
+
+initial(func): calc(func)
+{
+	System.out.println($1);
+}
+
+<int>prefix(op,cod, prec): op calc(prefix) calc(prefix)
+{
+	$$ = $2 $cod $3;
+}
+
+<int>infix(op,cod, prec): calc(infix) op calc(infix) prec
+{
+	$$ = $1 $cod $3;
+}
+
+<int>postfix(op,cod, prec): calc(postfix) calc(postfix) op prec
+{
+	$$ = $1 $cod $2;
+}
+
+
+<int>calc(order):
+	order("\+",{+}, %left 100)
+{
+	$$=$1;
+}
+| order("\-",{-}, %left 100)
+{
+	$$=$1;
+}
+| order("\*",{*}, %left 80)
+{
+	$$=$1;
+}
+| order("\/",{/}, %left 80)
+{
+	$$=$1;
+}
+| "\(" calc(order) "\)"
+{
+	$$=$2;
+}
+| "[0-9]+"
+{
+	$$= Integer.parseInt($1);
+}

@@ -1,0 +1,83 @@
+#!/bin/bash
+######################################################################
+# Claire a parser generator.                                         #
+# Copyright (C) 1999  Paul Pacheco <93-25642@ldc.usb.ve>             #
+#                                                                    #
+# This library is free software; you can redistribute it and/or      #
+# modify it under the terms of the GNU Lesser General Public         #
+# License as published by the Free Software Foundation; either       #
+# version 2 of the License, or (at your option) any later version.   #
+#                                                                    #
+# This library is distributed in the hope that it will be useful,    #
+# but WITHOUT ANY WARRANTY; without even the implied warranty of     #
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU  #
+# Lesser General Public License for more details.                    #
+#                                                                    #
+# You should have received a copy of the GNU Lesser General Public   #
+# License along with this library; if not, write to the Free         #
+# Software Foundation, Inc., 59 Temple Place, Suite 330,             #
+# Boston, MA  02111-1307  USA                                        #
+#                                                                    #
+# Please contact Paul Pacheco <93-25642@ldc.usb.ve> to submit any    #
+# suggestion or bug report.                                          #
+######################################################################
+
+# $Id: Claire,v 1.2 1999/11/21 02:12:38 Paul Exp $
+# 
+# this file simplifies the process of invoking claire. It find out
+# the directory claire is in, and starts the compiler
+# the changes to this file are
+#
+# $Log: Claire,v $
+# Revision 1.2  1999/11/21 02:12:38  Paul
+# Dramatically reduced the size of the generated tables (suggested by Ascander Suarez)
+#
+# Revision 1.1.1.1  1999/10/31 07:47:02  Paul
+# Imported Claire files
+#
+# Revision 1.2  1999/10/13 02:05:27  Paul
+# Improved the parser to better recognizing of java like languages
+#
+# Revision 1.1  1999/10/12 06:30:33  Paul
+# Added a shell script to simplify invoking the compiler
+# Modified a small grammar error
+#
+#
+
+#uncoment this line if you want to specify the directory claire is installed in
+#CLAIRE_HOME=/usr/local/Claire
+
+# first lets try to find out in what directory we are
+if [ "$CLAIRE_HOME" = "" ] ; then
+
+	 #if the directory hasn't been set by the user,
+	 #it is probably the same directory, this shell script is in
+	 if which $0 2> /dev/null > /dev/null ;then
+
+		  CLAIRE_HOME=`which $0`
+
+		  #be aware, this might be a simbolic link,
+		  # try to follow it
+		  while ( readlink $CLAIRE_HOME > /dev/null ) ; do
+				CLAIRE_HOME=`readlink $CLAIRE_HOME`;
+		  done
+
+		  #get just the directory
+		  CLAIRE_HOME=`dirname $CLAIRE_HOME`
+	 else
+		  echo "Can not find home directory of Claire.";
+		  echo "Please edit the shell script an set it manually";
+		  exit 1;
+	 fi
+		  
+fi
+
+if [ "$DEBUG" = "true" ] ; then
+    OPTIONS="-DClaire.debug=true"
+fi
+#the directory is in CLAIRE_HOME. All we have to do is start the java
+#virtual machine with claire loaded
+
+java $OPTIONS -jar $CLAIRE_HOME/Claire.jar $@
+
+exit $?
