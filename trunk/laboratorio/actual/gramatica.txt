@@ -1,0 +1,105 @@
+eof         = ''
+dot_comma   = ';'
+comma       = ','
+asign       = ':='
+open_c      = '['
+close_c     = ']'
+open_p      = '('
+close_p     = ')'
+open_l      = '{'
+close_l     = '}'
+math_plus   = '+'
+math_minus  = '-'
+math_mult   = '*'
+math_div    = '/'
+math_equal  = '='
+great       = '>'
+less        = '<'
+great_equal = '>='
+less_equal  = '<='
+not         = '!'
+bool_and    = '&&'
+bool_or     = '||'
+bool_equal  = '=='
+true        = 'true'
+false       = 'false'
+if          = 'if'
+while       = 'while'
+else        = 'else'
+int         = 'int'
+boolean     = 'boolean'
+float       = 'float'
+char        = 'char'
+byte        = 'byte'
+var_id      = {(a-zA-Z)(_a-zA-Z)*}
+num         = (-inf, inf)
+
+por
+START         -> DEFINICIONES INSTRUCCIONES
+START         -> INSTRUCCIONES
+START         -> eof
+
+DEFINICIONES  -> DEFINICION
+DEFINICIONES  -> DEFINICION dot_comma DEFINICIONES
+
+DEFINICION    -> VAR_TYPE VARIABLES
+
+VARIABLES     -> var_id
+              -> var_id comma VARIABLES
+
+VAR_TYPE      -> int
+              -> boolean
+              -> float
+              -> char
+              -> byte
+
+INSTRUCCIONES -> INSTRUCCION
+              -> INSTRUCCION dot_comma INSTRUCCIONES
+
+INSTRUCCION   -> ASIGNACION
+              -> CONDICIONAL
+              -> ITERACION
+              
+ASIGNACION    -> var_id asign EXPRESION
+              -> var_id open_c MATH_EXPR close_c asign EXPRESION
+              
+CONDICIONAL   -> if open_p BOOL_EXPR close_p open_l INSTRUCCIONES close_l
+              -> if open_p BOOL_EXPR close_p open_l INSTRUCCIONES close_l else open_l INSTRUCCIONES close_l
+
+ITERACION     -> while open_p BOOL_EXPR close_p open_l INSTRUCCIONES close_l
+              -> while open_p BOOL_EXPR close_p open_l INSTRUCCIONES close_l
+
+EXPRESION     -> MATH_EXPR
+              -> BOOL_EXPR
+              
+MATH_EXPR     -> NUMERO
+              -> NUMERO MATH_OPER MATH_EXPR
+              
+NUMERO        -> num
+              -> var_id
+              -> var_id open_c MATH_EXPR close_c
+
+MATH_OPER     -> math_plus
+              -> math_minus
+              -> math_mult
+              -> math_div
+              
+BOOL_EXPR     -> BOOLEAN
+              -> BOOLEAN BOOL_OPER BOOL_EXPR
+              
+BOOLEAN       -> true
+              -> false
+              -> var_id
+              -> var_id open_c MATH_EXPR close_c
+              -> not BOOLEAN
+              -> MATH_EXPR COMP_OPER MATH_EXPR
+
+BOOL_OPER     -> bool_and
+              -> bool_or
+              -> bool_equal
+
+COMP_OPER     -> math_equal
+              -> great
+              -> less
+              -> great_equal
+              -> less_equal
