@@ -13,6 +13,7 @@ Plataforma:
       @ensures: postcondicion
       @invariant: invariantes de clase
       @assert: aserciones intermedias
+      @assume: la herramienta no hara comprobaciones de que sea cierto
 Proyecto:
   Lenguaje a implementar:
     Lenguaje imperativo (mediano/pequeño)

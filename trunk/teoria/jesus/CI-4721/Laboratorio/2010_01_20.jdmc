@@ -1,0 +1,67 @@
+Descargar y aprender a usar ESC/Java2
+revisar la pagina del profesor ravelo
+  correguir "Bag" y "Account"
+  
+    
+G1:
+  Nombre: CaEL
+  Extension: .ce
+  Tipos Basicos:
+    Int     (4 Bytes)
+    Short   (2 Bytes)
+    Long    (8 Bytes)
+    Float   (4 Bytes)
+    Double  (8 Bytes)
+    Bool    (1 Byte)
+    Char    (UTF-8) -> (1~4 Bytes)
+    Void
+  Operadores:
+    {+,-,*,/,%}
+    {<,>,<=,>=,=,!}
+    {<<,>>,^,~,&,|}
+    {&&,||}
+
+G2:
+  Nombre: ???
+  Extension: ???
+  Tipos Basicos:
+    Int     (1 Word) (con signo)
+    Float   (1 Word) (1/4 mantiza , 3/4 exponente)
+    Bool    (1 Byte)
+    Char    (1 Byte)
+  Operadores:
+    Int     {+,*,-,/,%,-(unario), |?|}
+            {|char|}
+    Float   {+,*,-,/,-(unario),|?|}
+    Bool    {&&,||,!}
+            {<, >,<=,>=,=,!=}
+
+G3:
+  Nombre: ???
+  Extension: ???
+  Tipos Basicos:
+    ???
+  Operadores:
+    ???
+    
+G4:
+  Nombre: ???
+  Extension: ???
+  Tipos Basicos:
+    ???
+  Operadores:
+    ???
+    
+G6:
+  Nombre: L2Y3
+  Extension .ly
+  Tipos Basicos:
+    Int   (4 Bytes)
+    Bool  (1 Byte)
+    Char  (1 Byte)
+    Real  (4/8 Bytes)
+  Operadores:
+    Int {+,-,*,/,%,==,<,>,<=,>=,-(unario)}
+    Bool {&&,||,==,!(unario)}
+    Char {}
+    Real {+,-,*,/,==,<,>,<=,>=,-(unario)}

@@ -1,4 +1,3 @@
-eof         = ''
 dot_comma   = ';'
 comma       = ','
 asign       = ':='
@@ -26,18 +25,16 @@ false       = 'false'
 if          = 'if'
 while       = 'while'
 else        = 'else'
-int         = 'int'
-boolean     = 'boolean'
-float       = 'float'
-char        = 'char'
-byte        = 'byte'
+int         = 'Int'
+boolean     = 'Boolean'
+real        = 'Real'
+char        = 'Char'
+byte        = 'Byte'
 var_id      = {(a-zA-Z)(_a-zA-Z)*}
 num         = (-inf, inf)
 
-por
 START         -> DEFINICIONES INSTRUCCIONES
 START         -> INSTRUCCIONES
-START         -> eof
 
 DEFINICIONES  -> DEFINICION
 DEFINICIONES  -> DEFINICION dot_comma DEFINICIONES
@@ -49,9 +46,8 @@ VARIABLES     -> var_id
 
 VAR_TYPE      -> int
               -> boolean
-              -> float
+              -> real
               -> char
-              -> byte
 
 INSTRUCCIONES -> INSTRUCCION
               -> INSTRUCCION dot_comma INSTRUCCIONES

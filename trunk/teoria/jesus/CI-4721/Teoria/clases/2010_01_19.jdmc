@@ -1,0 +1,34 @@
+Definiciones:
+  Delta() = delta
+  Nat = Naturales
+
+Ejemplo:
+  GE = ({E,T,F},{a,+,*,(,)},P,E)
+  con P ={
+    E->E+T
+    E->T
+    T->T*F
+    T->F
+    F->a
+    F->(E)
+    
+  }
+
+
+Analisis Sintactico
+  Construccion de analizadores sintacticos descendentes (como automatas de pila no-deterministicos)
+  Dada una GLC  G=(N,E,P,S) cualquiera
+  definimos el APE Desc(G)= ({q0,q1}, E, Union(N,E),Delta(), q0, {q1})
+    Delta(q0,'','') = {(q1,S)}
+    Delta(q1,'',A) = {x : A->x pertenece a P : (q1,x)} para A perteneciente a N
+    Delta(q1,'a','a')={q1,''} para a perteneciente a E
+    
+  Teorema:
+    L(Desc(G)) = L(G))
+  Lema:
+    Para todo n perteneciente a Nat :: 
+      Si: [q1,w,Alfa] Trans(n,desc(G)) [q1,w',Alfa']
+      Entonces: Existe x perteneciente E*
+        tal que:
+          w = xw'
+          Alfa Trans((n-|x|),G) xAlfa'
