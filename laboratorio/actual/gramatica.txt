@@ -2,7 +2,7 @@
  * L2Y3 es un lenguaje imperativo realizado
  *      en el laboratorio de Lenguajes 2 y 3
  * @version     $Revision: 1.1.1.1 $
- * @author      Gustavo Briceño <??-?????> Jesus Malledo <04-37210>
+ * @author      Gustavo Briceño <04-36771> Jesus Malledo <04-37210>
  * @since       JDK1.4
  */
 
