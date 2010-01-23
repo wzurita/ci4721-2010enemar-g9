@@ -1,79 +1,94 @@
-dot_comma   = ';'
-comma       = ','
-asign       = ':='
-open_c      = '['
-close_c     = ']'
-open_p      = '('
-close_p     = ')'
-open_l      = '{'
-close_l     = '}'
-math_plus   = '+'
-math_minus  = '-'
-math_mult   = '*'
-math_div    = '/'
-math_equal  = '='
-great       = '>'
-less        = '<'
-great_equal = '>='
-less_equal  = '<='
-not         = '!'
-bool_and    = '&&'
-bool_or     = '||'
-bool_equal  = '=='
-true        = 'true'
-false       = 'false'
-if          = 'if'
-while       = 'while'
-else        = 'else'
-int         = 'Int'
-boolean     = 'Boolean'
-real        = 'Real'
-char        = 'Char'
-byte        = 'Byte'
-var_id      = {(a-zA-Z)(_a-zA-Z)*}
-num         = (-inf, inf)
+/**
+ * L2Y3 es un lenguaje imperativo realizado
+ *      en el laboratorio de Lenguajes 2 y 3
+ * @version     $Revision: 1.1.1.1 $
+ * @author      Gustavo Briceño <??-?????> Jesus Malledo <04-37210>
+ * @since       JDK1.4
+ */
 
-START         -> DEFINICIONES INSTRUCCIONES
-START         -> INSTRUCCIONES
+%start inicio
 
-DEFINICIONES  -> DEFINICION
-DEFINICIONES  -> DEFINICION dot_comma DEFINICIONES
+white: [ "([\r\n\t (//[^\n\r]*)(/\*[^(\*/)]*\*/)]+" ]
 
-DEFINICION    -> VAR_TYPE VARIABLES
+dot_comma   : ";"
+comma       : ","
+asign       : ":="
+open_c      : "["
+close_c     : "]"
+open_p      : "("
+close_p     : ")"
+open_l      : "{"
+close_l     : "}"
+math_plus   : "+"
+math_minus  : "-"
+math_mult   : "*"
+math_div    : "/"
+math_equal  : "="
+great       : ">"
+less        : "<"
+great_equal : ">="
+less_equal  : "<="
+not         : "!"
+bool_and    : "&&"
+bool_or     : "||"
+bool_equal  : "=="
+true        : "true"
+false       : "false"
+if          : "if"
+while       : "while"
+else        : "else"
+int         : "Int"
+boolean     : "Boolean"
+real        : "Real"
+char        : "Char"
+byte        : "Byte"
+var_id      : {(a-zA-Z)(_a-zA-Z)*}
+num         : (-inf, inf)
 
-VARIABLES     -> var_id
-              -> var_id comma VARIABLES
 
-VAR_TYPE      -> int
-              -> boolean
-              -> real
-              -> char
 
-INSTRUCCIONES -> INSTRUCCION
-              -> INSTRUCCION dot_comma INSTRUCCIONES
 
-INSTRUCCION   -> ASIGNACION
-              -> CONDICIONAL
-              -> ITERACION
+inicio        : definiciones instrucciones
+              | instrucciones
+
+definiciones  : definiciones ";" definicion
+              | definicion
+
+definicion    : var_type variables
+      
+variables     : variables "," var_id
+              | var_id
+
+var_type      : "Int"
+              : "Boolean"
+              : "Real"
+              : "Char"
+
+instrucciones : instrucciones ";" instruccion
+              | instruccion
+
+instruccion   : asignacion
+              | condicional
+              | iteracion
               
-ASIGNACION    -> var_id asign EXPRESION
-              -> var_id open_c MATH_EXPR close_c asign EXPRESION
+asignacion    : var_id ":=" expresion
+              | var_id "[" math_expr "]" ":=" expresion
               
-CONDICIONAL   -> if open_p BOOL_EXPR close_p open_l INSTRUCCIONES close_l
-              -> if open_p BOOL_EXPR close_p open_l INSTRUCCIONES close_l else open_l INSTRUCCIONES close_l
+condicional   : if "(" bool_expr ")" "{" instrucciones "}"
+              | if "(" bool_expr ")" "{" instrucciones "}" else "{" instrucciones "}"
 
-ITERACION     -> while open_p BOOL_EXPR close_p open_l INSTRUCCIONES close_l
-              -> while open_p BOOL_EXPR close_p open_l INSTRUCCIONES close_l
+iteracion     : while "(" bool_expr ")" "{" instrucciones "}"
+              | while "(" bool_expr ")" "{" instrucciones "}"
 
-EXPRESION     -> MATH_EXPR
-              -> BOOL_EXPR
+expresion     : math_expr
+              | bool_expr
               
-MATH_EXPR     -> NUMERO
-              -> NUMERO MATH_OPER MATH_EXPR
+math_expr     : math_expr math_oper numero
+              | numero
               
-NUMERO        -> num
-              -> var_id
-              -> var_id open_c MATH_EXPR close_c
+numero        : num
+              | var_id
+              | var_id "[" MATH_EXPR "]"
 
 MATH_OPER     -> math_plus
               -> math_minus
