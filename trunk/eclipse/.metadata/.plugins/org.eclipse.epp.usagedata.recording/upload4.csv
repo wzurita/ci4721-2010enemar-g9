@@ -1,0 +1,26 @@
+what,kind,bundleId,bundleVersion,description,time
+java.runtime.version,sysinfo,,,"1.6.0_17-b04",1264267204359
+java.specification.name,sysinfo,,,"Java Platform API Specification",1264267204359
+java.specification.vendor,sysinfo,,,"Sun Microsystems Inc.",1264267204359
+java.specification.version,sysinfo,,,"1.6",1264267204359
+java.vendor,sysinfo,,,"Sun Microsystems Inc.",1264267204359
+java.version,sysinfo,,,"1.6.0_17",1264267204359
+java.vm.info,sysinfo,,,"mixed mode",1264267204359
+java.vm.name,sysinfo,,,"Java HotSpot(TM) Client VM",1264267204359
+java.vm.specification.name,sysinfo,,,"Java Virtual Machine Specification",1264267204359
+java.vm.specification.vendor,sysinfo,,,"Sun Microsystems Inc.",1264267204359
+java.vm.specification.version,sysinfo,,,"1.0",1264267204359
+java.vm.vendor,sysinfo,,,"Sun Microsystems Inc.",1264267204359
+java.vm.version,sysinfo,,,"14.3-b01",1264267204359
+started,bundle,org.eclipse.equinox.p2.ui.sdk.scheduler,1.0.0.v20090520-1905,"org.eclipse.equinox.p2.ui.sdk.scheduler",1264267205125
+started,bundle,org.eclipse.mylyn.commons.net,3.2.0.v20090617-0100-e3x,"org.eclipse.mylyn.commons.net",1264267205296
+started,bundle,org.eclipse.mylyn.commons.ui,3.2.2.v20090912-0400-e3x,"org.eclipse.mylyn.commons.ui",1264267205625
+started,bundle,org.eclipse.mylyn.bugzilla.core,3.2.2.v20090912-0400-e3x,"org.eclipse.mylyn.bugzilla.core",1264267206187
+started,bundle,org.eclipse.mylyn.bugzilla.ui,3.2.2.v20090912-0400-e3x,"org.eclipse.mylyn.bugzilla.ui",1264267206312
+started,bundle,org.eclipse.mylyn.context.core,3.2.2.v20090912-0400-e3x,"org.eclipse.mylyn.context.core",1264267206500
+started,bundle,org.eclipse.mylyn.context.ui,3.2.2.v20090912-0400-e3x,"org.eclipse.mylyn.context.ui",1264267206562
+started,bundle,org.eclipse.mylyn.tasks.ui,3.2.2.v20090912-0400-e3x,"org.eclipse.mylyn.tasks.ui",1264267206937
+started,bundle,org.eclipse.mylyn.team.ui,3.2.2.v20090912-0400-e3x,"org.eclipse.mylyn.team.ui",1264267207000
+started,bundle,org.eclipse.update.scheduler,3.2.200.v20081127,"org.eclipse.update.scheduler",1264267207031
+started,bundle,org.eclipse.update.core,3.2.300.v20090525,"org.eclipse.update.core",1264267207203
+started,bundle,org.eclipse.wst.ws.service.policy.ui,1.0.102.v200903070248,"org.eclipse.wst.ws.service.policy.ui",1264267207234

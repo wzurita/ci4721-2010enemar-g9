@@ -1,0 +1,12 @@
+INDEX VERSION 1.126+C:\Documents and Settings\Jesus Diego\Escritorio\LENGUAJE\eclipse\.metadata\.plugins\org.eclipse.jdt.core
+1922148926.index
+2713768106.index
+233105473.index
+2339036177.index
+911347026.index
+1085352897.index
+2361499653.index
+1487858367.index
+1067744687.index
+4015662414.index
+505140301.index
