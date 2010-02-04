@@ -10,7 +10,16 @@
 
 white: [ "([\r\n\t (//[^\n\r]*)(/\*[^(\*/)]*\*/)]+" ]
 
-dot_comma   : ";"
+t_21      : "!"
+t_22      : "\""
+t_23      : "#"
+t_24      : "$"
+t_25      : "%"
+t_26      : "&"
+t_27      :
+
+
+
 comma       : ","
 asign       : ":="
 open_c      : "["
@@ -37,33 +46,33 @@ false       : "false"
 if          : "if"
 while       : "while"
 else        : "else"
-int         : "Int"
-boolean     : "Boolean"
-real        : "Real"
-char        : "Char"
-byte        : "Byte"
-var_id      : {(a-zA-Z)(_a-zA-Z)*}
-num         : (-inf, inf)
+
+var_id      : "[$@]?[a-z][_a-zA-Z]*"
+type_id     : "[A-Z][_a-zA-Z]*"
+
+num         : ""
 
 
 
 
-inicio        : definiciones instrucciones
-              | instrucciones
+inicio        : defs
 
-definiciones  : definiciones ";" definicion
-              | definicion
+defs          : defs def
+              | def
+             
+def           : def_fun
+              | def_var
+              | def_type
 
-definicion    : var_type variables
+def_var       : type_id id_vars dot_comma
+              | type_id id_vars_asign dot_comma
       
-variables     : variables "," var_id
-              | var_id
+id_vars       : id_vars comma id_var
+              | id_var
 
-var_type      : "Int"
-              : "Boolean"
-              : "Real"
-              : "Char"
-
+id_vars_asign : id_var asign valor
+              | id_var comma id_vars_asign comma valor
+              
 instrucciones : instrucciones ";" instruccion
               | instruccion
 

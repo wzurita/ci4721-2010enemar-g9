@@ -1,0 +1,48 @@
+Nombre:
+  L2Y3
+
+Tipos Basicos:
+  Entero
+    Declaracion:
+      Int x ;
+      Int x := 0 ;
+      Int x , y , z := 0 , 1 , 2 ;
+    Especificaciones:
+      32 bits (1 word)
+      MAXINT =  2.147.483.647
+      MININT = -2.147.483.648
+      overflow+ -> MAXINT
+      overflow- ->MININT 
+    Funciones Unarias 
+      Negativo
+        '-'
+       
+    Funciones Binarias Int:
+      Suma:
+        '+'
+      Resta:
+        '-'
+      Multiplicacion:
+        '*'
+      Division:
+        '/'
+      Resto: (mod)
+        '%'
+    Funciones Binarias Bool:
+      Mayor:
+        '>'
+      Menor:
+        '<'
+      Mayor/Igual:
+        '>='
+      Menor/Igual:
+        '<='
+    Descripcion:
+
+Tipos Complejos:
+  Registro:
+    Typedef Xxx { *definiciones* };
+  Arreglo:
+    Tttt[20] xxx ;
+  String:
+    String xxx ;
