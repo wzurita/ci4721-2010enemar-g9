@@ -1,0 +1,25 @@
+Analisis Sintactico LR(k)
+  Definiciones:
+    Dada G=(N,E,P,S) si 
+      S$^k 
+      =[G.der]=>
+      {beta}{alfa}uw
+    con |u| = k
+    entonces:
+      {beta}{alfa}u es contexto LR(k) de A->{alfa}
+      los prefijos de {beta}{alfa} son prefijos viables de G
+      si {alfa}={alfa[0]}{alfa[1]}, el prefijo viable {beta}{alfa[0]}
+  Definicion:
+    Maquina caracteristica LR(k)
+      MCLR[k](G)= (Union({q0},Items-LR[k](G)),Union(N,E),delta(),q0,F)
+      con
+        delta(q0,'')={{alfa}:S->}
+      ....
+    ... lazy
+    
+  Ejercicio:
+    S -> aaA
+    A -> Bba
+    A -> .
+    B -> aBb
+    B -> .
