@@ -1,0 +1,178 @@
+/**
+ * L2Y3 es un lenguaje imperativo realizado
+ *      en el laboratorio de Lenguajes 2 y 3
+ * @version     $Revision: 1.1.1.1 $
+ * @author      Gustavo Briceño <04-36771> Jesus Malledo <04-37210>
+ * @since       JDK1.4
+ */
+
+class L2y2
+ 
+%start inicio
+
+white: [ "([\r\n\t (//[^\n\r]*)(/\*[^(\*/)]*\*/)]+" ]
+
+tok213D: "!="
+tok2626: "&&"
+tok3A3D: ":="
+tok3C3D: "<="
+tok3E3D: ">="
+tok3D3D: "=="
+tok7C7C: "||"
+tok21: "!"
+tok25: "%"
+tok28: "("
+tok29: ")"
+tok2A: "*"
+tok2B: "+"
+tok2C: ","
+tok2D: "-"
+tok2E: "."
+tok2F: "/"
+tok3B: ";"
+tok3C: "<"
+tok3D: "="
+tok3E: ">"
+tok4B: "["
+tok5D: "]"
+tok7B: "{"
+tok7D: "}"
+
+tokTrue: "True"
+tokFalse: "False"
+tokIf: "If"
+tokWhile: "While"
+tokElse: "Else"
+tokFun: "Function"
+tokMain: "Main"
+tokTypedef: "Typedef"
+tokUnion: "Union"
+tokIdvar: "[$@]?[a-z][_a-zA-Z]*"
+tokIdtype: "[A-Z][_a-zA-Z]*"
+tokIdunion: "[A-Z][_a-zA-Z]*"
+tokIdfun: "[A-Z][_a-zA-Z]*"
+tokChar: "'[^']'"
+tokNum: ""
+tokString: ""
+
+
+
+
+inicio    : defs main defs
+
+main      : tokFun tokMain tok7B cmds tok7D
+
+defs      : defs def
+          | def
+             
+def       : defVar
+          | defType
+          | defUnion
+          | defFun
+          
+defVar    : tokIdtype vars tok3B 
+          | tokIdtype asignVars tok3B 
+              
+vars      : vars tok2C tokIdVars
+          | tokIdVars
+              
+asignVars : tokIdvar tok3A3D valor
+          | tokIdvar tok2C asignVars tok2C valor
+              
+defType   : tokTypedef tokIdtype tok7B defVars tok7D
+
+defVars   : defVars defVar
+          | defVar
+
+defUnion  : tokUnion tokIdunion tok7B typeList tok7D
+
+typeList  : typeList tok3B type 
+          | type
+              
+type      : tokIdtype tokIdvar
+              
+valor     : string
+          | exprMath
+          | exprBool
+          | registro
+          | tokChar
+
+string    : tokString
+
+expMath   : expMath oper2Math numero
+          | numero
+              
+numero    : tok28 exprMath tok29
+          | tokNum
+          | variable
+          | oper1Math exprMath
+          
+oper1Math : tok2D
+
+oper2Math : tok2B
+          | tok2D
+          | tok2A
+          | tok2F
+          | tok25
+
+exprBool  : exprBool oper2Bool boolean 
+          | boolean
+          
+boolean   : tok28 exprBool tok29
+          | tokTrue
+          | tokFalse
+          | variable
+          | exprMath compMath exprMath
+          | oper1Bool exprBool
+          
+oper2Bool : tok2626
+          | tok213D
+          | tok7C7C
+          | tok3D3D
+
+oper1Bool : tok21
+
+compMath  : tok213D
+          | tok3C3D
+          | tok3E3D
+          | tok3C
+          | tok3E
+          | tok3D
+
+variable  : tokIdvar
+          | tokIdvar tok4B exprMath tok5D
+
+cmd       : 
+              
+              
+              
+              
+              
+              
+              
+              instrucciones : instrucciones ";" instruccion
+              | instruccion
+
+instruccion   : asignacion
+              | condicional
+              | iteracion
+              
+asignacion    : var_id ":=" expresion
+              | var_id "[" math_expr "]" ":=" expresion
+              
+condicional   : if "(" bool_expr ")" "{" instrucciones "}"
+              | if "(" bool_expr ")" "{" instrucciones "}" else "{" instrucciones "}"
+
+iteracion     : while "(" bool_expr ")" "{" instrucciones "}"
+              | while "(" bool_expr ")" "{" instrucciones "}"
+
+expresion     : math_expr
+              | bool_expr
+                            
+
+defFun        : tokFun tokIdfun tok28 args tok29 tok7B cmds tok7D
+
+args          : args tok2C arg
+              | arg
+              
+arg           : tokIdtype tokIdvar
