@@ -33,7 +33,7 @@ tok3B: ";"
 tok3C: "<"
 tok3D: "="
 tok3E: ">"
-tok4B: "["
+tok5B: "["
 tok5D: "]"
 tok7B: "{"
 tok7D: "}"
@@ -99,7 +99,7 @@ valor     : string
 
 string    : tokString
 
-expMath   : expMath oper2Math numero
+exprMath  : exprMath oper2Math numero
           | numero
               
 numero    : tok28 exprMath tok29
@@ -140,39 +140,33 @@ compMath  : tok213D
           | tok3D
 
 variable  : tokIdvar
-          | tokIdvar tok4B exprMath tok5D
+          | tokIdvar tok5B exprMath tok5D
 
-cmd       : 
-              
-              
-              
-              
-              
-              
-              
-              instrucciones : instrucciones ";" instruccion
-              | instruccion
+defFun    : tokFun tokIdfun tok28 args tok29 tok7B cmds tok7D
 
-instruccion   : asignacion
-              | condicional
-              | iteracion
+args      : args tok2C arg
+          | arg
               
-asignacion    : var_id ":=" expresion
-              | var_id "[" math_expr "]" ":=" expresion
+arg       : tokIdtype tokIdvar
+
+cmds      : cmds tok3B cmd
+          | cmd
+          
+cmd       : asign
+          | iter
+          | cond
+          
+asign     : tokIdvar tok213D valor
+          | tokIdvar tok213D funcion
+          | tokIdvar tok5B exprMath tok5D tok213D valor
+          | tokIdvar tok5B exprMath tok5D tok213D funcion
               
-condicional   : if "(" bool_expr ")" "{" instrucciones "}"
-              | if "(" bool_expr ")" "{" instrucciones "}" else "{" instrucciones "}"
+funcion   : tokIdfun tok28 varList tok29
 
-iteracion     : while "(" bool_expr ")" "{" instrucciones "}"
-              | while "(" bool_expr ")" "{" instrucciones "}"
+varList   : varList tok2C tokIdvar
+          | tokIdvar
 
-expresion     : math_expr
-              | bool_expr
-                            
+cond      : tokIf tok28 exprBool tok29 tok7B cmds tok7D
+          | tokIf tok28 exprBool tok29 tok7B cmds tok7D tokElse tok7B cmds tok7D
 
-defFun        : tokFun tokIdfun tok28 args tok29 tok7B cmds tok7D
-
-args          : args tok2C arg
-              | arg
-              
-arg           : tokIdtype tokIdvar
+iter      : tokWhile tok28 exprBool tok29 tok7B cmds tok7D                            
