@@ -43,6 +43,7 @@ tokFalse: "False"
 tokIf: "If"
 tokWhile: "While"
 tokElse: "Else"
+tokElseif: "Elseif"
 tokFun: "Function"
 tokMain: "Main"
 tokTypedef: "Typedef"
@@ -60,7 +61,7 @@ tokString: "\"[^\"]*\""
 
 inicio    : defs main defs
 
-main      : tokFun tokMain tok7B cmds tok7D
+main      : tokFun tokMain bloque
 
 defs      : defs def
           | def
@@ -70,9 +71,12 @@ def       : defVar
           | defUnion
           | defFun
           
-defVar    : tokIdtype vars tok3B 
-          | tokIdtype asignVars tok3B 
-              
+defVar    : array vars tok3B 
+          | array asignVars tok3B 
+          
+array     : tokIdtype
+          | tokIdtype tok5B exprMath tok5D
+          
 vars      : vars tok2C tokIdVars
           | tokIdVars
               
@@ -89,7 +93,7 @@ defUnion  : tokUnion tokIdunion tok7B typeList tok7D
 typeList  : typeList tok3B type 
           | type
               
-type      : tokIdtype tokIdvar
+type      : array tokIdvar
               
 valor     : string
           | exprMath
@@ -142,12 +146,12 @@ compMath  : tok213D
 variable  : tokIdvar
           | tokIdvar tok5B exprMath tok5D
 
-defFun    : tokFun tokIdfun tok28 args tok29 tok7B cmds tok7D
+defFun    : tokFun tokIdfun tok28 args tok29 bloque
 
 args      : args tok2C arg
           | arg
               
-arg       : tokIdtype tokIdvar
+arg       : array tokIdvar
 
 cmds      : cmds tok3B cmd
           | cmd
@@ -166,7 +170,17 @@ funcion   : tokIdfun tok28 varList tok29
 varList   : varList tok2C tokIdvar
           | tokIdvar
 
-cond      : tokIf tok28 exprBool tok29 tok7B cmds tok7D
-          | tokIf tok28 exprBool tok29 tok7B cmds tok7D tokElse tok7B cmds tok7D
+cond      : tokIf tok28 exprBool tok29 bloque
+          | tokIf tok28 exprBool tok29 bloque tokElse bloque
+          | tokIf tok28 exprBool tok29 bloque elseIf
+          | tokIf tok28 exprBool tok29 bloque elseIf tokElse bloque
+          
+elseIf    : elseIf tokElseif tok28 exprBool tok29 bloque
+          | tokElseif tok28 exprBool tok29 bloque
 
-iter      : tokWhile tok28 exprBool tok29 tok7B cmds tok7D                            
+iter      : tokWhile tok28 exprBool tok29 bloque                            
+
+for       : tok28 tokIdType tokIdvar tok2C exprBool tok2C cmd tok29 bloque
+          | tok28 tokIdvar tok2C exprBool tok2C cmd tok29 bloque
+          
+bloque    : tok7B cmds tok7D
