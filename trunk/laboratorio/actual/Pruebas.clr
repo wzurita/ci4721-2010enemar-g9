@@ -1,0 +1,25 @@
+class Pruebas
+
+input:    /* empty string */
+| input line
+
+
+line:     "\n"
+| exp "\n"  { System.out.println("\t"+$1); }
+
+
+<double> exp:
+"([0-9]+\.?[0-9]*)-\."
+{
+	$$ = Double.parseDouble($1);
+}
+| exp "\+" exp   %left 100     { $$ = $1 + $3;    }
+| exp "\-" exp   %left 100     { $$ = $1 - $3;    }
+| exp "\*" exp   %left 80      { $$ = $1 * $3;    }
+| exp "\/" exp   %left 80      { $$ = $1 / $3;    }
+| "\-" exp       %left 60      { $$ = -$2;        }
+| exp "\^" exp   %right 50     { $$ = Math.pow ($1, $3); }
+| "\(" exp "\)"                { $$ = $2;         }
+
+white: "."
+|
