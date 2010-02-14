@@ -1,0 +1,186 @@
+/**
+ * L2Y3 es un lenguaje imperativo realizado
+ *      en el laboratorio de Lenguajes 2 y 3
+ * @version     $Revision: 1.1.1.1 $
+ * @author      Gustavo Briceño <04-36771> Jesus Malledo <04-37210>
+ * @since       JDK1.4
+ */
+
+class L2y2
+ 
+%start inicio
+
+white: [ "([\r\n\t (//[^\n\r]*)(/\*[^(\*/)]*\*/)]+" ]
+
+tok213D: "!="
+tok2626: "&&"
+tok3A3D: ":="
+tok3C3D: "<="
+tok3E3D: ">="
+tok3D3D: "=="
+tok7C7C: "||"
+tok21: "!"
+tok25: "%"
+tok28: "("
+tok29: ")"
+tok2A: "*"
+tok2B: "+"
+tok2C: ","
+tok2D: "-"
+tok2E: "."
+tok2F: "/"
+tok3B: ";"
+tok3C: "<"
+tok3D: "="
+tok3E: ">"
+tok5B: "["
+tok5D: "]"
+tok7B: "{"
+tok7D: "}"
+
+tokTrue: "True"
+tokFalse: "False"
+tokIf: "If"
+tokWhile: "While"
+tokElse: "Else"
+tokElseif: "Elseif"
+tokFun: "Function"
+tokMain: "Main"
+tokTypedef: "Typedef"
+tokUnion: "Union"
+tokIdvar: "[$@]?[a-z][_a-zA-Z0-9]*"
+tokIdtype: "[A-Z][_a-zA-Z0-9]*"
+tokIdunion: "[A-Z][_a-zA-Z0-9]*"
+tokIdfun: "[A-Z][_a-zA-Z0-9]*"
+tokChar: "'[[^'](\\[([01]?[0-9]?[0-9]))(2[0-9][0-9])]]'"
+tokNum: "-?[0-9][0-9]*(.[0-9][0-9]*)?"
+tokString: "\"[^\"]*\""
+
+
+
+
+inicio    : defs main defs
+
+main      : tokFun tokMain bloque
+
+defs      : defs def
+          | def
+             
+def       : defVar
+          | defType
+          | defUnion
+          | defFun
+          
+defVar    : array vars tok3B 
+          | array asignVars tok3B 
+          
+array     : tokIdtype
+          | tokIdtype tok5B exprMath tok5D
+          
+vars      : vars tok2C tokIdVars
+          | tokIdVars
+              
+asignVars : tokIdvar tok3A3D valor
+          | tokIdvar tok2C asignVars tok2C valor
+              
+defType   : tokTypedef tokIdtype tok7B defVars tok7D
+
+defVars   : defVars defVar
+          | defVar
+
+defUnion  : tokUnion tokIdunion tok7B typeList tok7D
+
+typeList  : typeList tok3B type 
+          | type
+              
+type      : array tokIdvar
+              
+valor     : string
+          | exprMath
+          | exprBool
+          | registro
+          | tokChar
+
+string    : tokString
+
+exprMath  : exprMath oper2Math numero
+          | numero
+              
+numero    : tok28 exprMath tok29
+          | tokNum
+          | variable
+          | oper1Math exprMath
+          
+oper1Math : tok2D
+
+oper2Math : tok2B
+          | tok2D
+          | tok2A
+          | tok2F
+          | tok25
+
+exprBool  : exprBool oper2Bool boolean 
+          | boolean
+          
+boolean   : tok28 exprBool tok29
+          | tokTrue
+          | tokFalse
+          | variable
+          | exprMath compMath exprMath
+          | oper1Bool exprBool
+          
+oper2Bool : tok2626
+          | tok213D
+          | tok7C7C
+          | tok3D3D
+
+oper1Bool : tok21
+
+compMath  : tok213D
+          | tok3C3D
+          | tok3E3D
+          | tok3C
+          | tok3E
+          | tok3D
+
+variable  : tokIdvar
+          | tokIdvar tok5B exprMath tok5D
+
+defFun    : tokFun tokIdfun tok28 args tok29 bloque
+
+args      : args tok2C arg
+          | arg
+              
+arg       : array tokIdvar
+
+cmds      : cmds tok3B cmd
+          | cmd
+          
+cmd       : asign
+          | iter
+          | cond
+          
+asign     : tokIdvar tok213D valor
+          | tokIdvar tok213D funcion
+          | tokIdvar tok5B exprMath tok5D tok213D valor
+          | tokIdvar tok5B exprMath tok5D tok213D funcion
+              
+funcion   : tokIdfun tok28 varList tok29
+
+varList   : varList tok2C tokIdvar
+          | tokIdvar
+
+cond      : tokIf tok28 exprBool tok29 bloque
+          | tokIf tok28 exprBool tok29 bloque tokElse bloque
+          | tokIf tok28 exprBool tok29 bloque elseIf
+          | tokIf tok28 exprBool tok29 bloque elseIf tokElse bloque
+          
+elseIf    : elseIf tokElseif tok28 exprBool tok29 bloque
+          | tokElseif tok28 exprBool tok29 bloque
+
+iter      : tokWhile tok28 exprBool tok29 bloque                            
+
+for       : tok28 tokIdType tokIdvar tok2C exprBool tok2C cmd tok29 bloque
+          | tok28 tokIdvar tok2C exprBool tok2C cmd tok29 bloque
+          
+bloque    : tok7B cmds tok7D
