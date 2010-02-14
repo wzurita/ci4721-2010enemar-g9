@@ -1,25 +1,113 @@
 class Pruebas
 
-input:    /* empty string */
-| input line
+%start prefijo, infijo, postfijo
 
-
-line:     "\n"
-| exp "\n"  { System.out.println("\t"+$1); }
-
-
-<double> exp:
-"([0-9]+\.?[0-9]*)-\."
-{
-	$$ = Double.parseDouble($1);
-}
-| exp "\+" exp   %left 100     { $$ = $1 + $3;    }
-| exp "\-" exp   %left 100     { $$ = $1 - $3;    }
-| exp "\*" exp   %left 80      { $$ = $1 * $3;    }
-| exp "\/" exp   %left 80      { $$ = $1 / $3;    }
-| "\-" exp       %left 60      { $$ = -$2;        }
-| exp "\^" exp   %right 50     { $$ = Math.pow ($1, $3); }
-| "\(" exp "\)"                { $$ = $2;         }
-
-white: "."
+white: [ "[\r\n\t ]+" ]
 |
+
+infijo: entrada
+{
+	System.out.println($1);
+}
+
+prefijo: prefexpr
+{
+	System.out.println($1);
+}
+
+postfijo: postexpr
+{
+	System.out.println($1);
+}
+
+<int> entrada: 
+
+entrada "\+" entrada %left 90
+{
+	$$ = $1 + $3;
+	
+}
+|
+entrada "\-" entrada %left 90
+{
+	$$ = $1 - $3;
+}
+|
+entrada "\*" entrada %left 80
+{
+	$$ = $1 * $3;
+	
+	//System.out.println($$);	
+} 	
+| entrada "/" entrada %left 80
+{
+	$$ = $1 / $3;
+}		
+| "\(" entrada "\)"
+{
+	$$ = $2;
+}
+|	"[0-9]+"
+{
+	$$ = Integer.parseInt($1);
+}
+
+
+<int> prefexpr: 
+"\*" prefexpr prefexpr
+{
+	$$ = $2 * $3;
+	
+	//System.out.println($$);	
+} 	
+| "/" prefexpr prefexpr
+{
+	$$ = $2 / $3;
+}
+| "\+" prefexpr prefexpr
+{
+	$$ = $2 + $3;
+	
+}
+| "\-" prefexpr prefexpr
+{
+	$$ = $2 - $3;
+}
+| "\(" prefexpr "\)"
+{
+	$$ = $2;
+}
+|	"[0-9]+"
+{
+	$$ = Integer.parseInt($1);
+}
+
+
+<int> postexpr: 
+postexpr postexpr "\*"
+{
+	$$ = $1 * $2;
+	
+	//System.out.println($$);	
+} 	
+| postexpr postexpr "/"
+{
+	$$ = $1 / $2;
+}
+| postexpr postexpr "\+"
+{
+	$$ = $1 + $2;
+	
+}
+| postexpr postexpr "\-"
+{
+	$$ = $1 - $2;
+}
+| "\(" postexpr "\)"
+{
+	$$ = $2;
+}
+|	"[0-9]+"
+{
+	$$ = Integer.parseInt($1);
+}
