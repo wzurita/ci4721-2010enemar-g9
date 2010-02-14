@@ -1,0 +1,12 @@
+Void es un tipo valido en las funciones
+
+Registro no es correspondiente con arreglo
+  Registry{T0 a0,T1 a1...}
+Union no es correspondiente con arreglo
+  Variant{T0 a0,T1 a1...}
+Arreglos de arreglos
+alr  
+
+  podriamos hacer lo siguiente:
+ 
+  registro ---- {Int c.....}  Variant ---- [Int c....]
