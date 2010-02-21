@@ -1,0 +1,164 @@
+simtable.jar
+
+tipos contenidos en el paquete:
+
+-------------------simbol: representa una variable del lenguaje:
+
+atributos:
+
+String Name -> nombre de la variable
+String Type -> Tipo de datos de la variable
+char varType -> un caracter para marcar si la variable es estatica, constante o normal
+
+subrutinas del tipo:
+
+simbol(name,type,var) -> constructor del tipo, los tres parametros de entrada son los tres atributos en el mismo orden descrito arriba.
+
+Nombre() -> retorna el nombre
+Tipo() -> retorna el tipo
+varType() -> retorna varType
+
+------------------simtable: representa una tabla de simbolos del lenguaje.
+
+atributos:
+
+List<simbol> symbols Lista de simbolos que representa la tabla de simbolos.
+
+subrutinas:
+
+simtable() -> inicializa la tabla de simbolos.
+exists(nombre) ->verifica si existe la variable con el nombre 'nombre' y retorna su indice.
+add(nombre,tipo,varType) -> crea un simbol y lo agrega a la tabla, en caso de estar repetido el simbolo regresa false, caso contrario regresa true.
+get(nombre) -> retorna el simbol de nombre 'nombre', en caso de que exista retorna null.
+clear() -> Elimina todos los simbolos de la tabla.
+
+------------------typeTable representa una tabla de tipos validos (este tipo no esta listo, de momento trata todos los tipos como tipos basicos.)}
+
+atributos:
+
+List<String> types Lista de tipos que contiene los tipos permitidos en el lenguaje.
+
+subrutinas:
+
+typeTable() -> inicializa la tabla de tipos validos y agrega los tipos: Int, Real, Char, Bool.
+Las funciones exists, add, get y clear existen y funcionan equivalentementea como funcionan en el tipo simtable.
+
+-------------------instruction tipo que representa una instrucion, no contiene nada por si mismo pero es extendido por dos tipos absTree y Block.
+
+---------absTree arbol binario que representa ciertos tipos de instrucciones.
+
+atributos:
+
+String Value el valor del nodo actual.
+
+absTree nodeLeft = referencia al nodo que se encuentra a la izquierda del nodo actual.
+
+absTree nodeRight = referencia al nodo que se encuentra a la derecha del nodo actual.
+
+subrutinas:
+
+absTree(String value) -> inicializa el nodo con el valor value.
+
+Value() -> retorna Value
+
+expandLeft(lvalue, rvalue) : expande el arbol a la izquierda esto quiere decir:
+a = new absTree("a"); seria           ("a")
+
+si a ese arbol le hacemos expandLeft("b","c"); quedaria
+				      ("a")
+				      /   \
+				   ("b") ("c")	
+si ahora hacemos expandLeft("d","e"); quedaria	
+				      ("a")
+				      /   \
+				   ("b") ("c")	
+                                   /   \
+				("d") ("e")	
+en caso de hacer de nuevo expandLeft, el arbol seguiria creciendo por la izquierda en este caso el nodo ("d").
+
+expandRight(lvalue,rvalue) funciona de forma analoga a expandLeft pero creciendo hacia la derecha.
+
+insertTreeLeft(absTree c); inserta un arbol hacia la izquierda. es decir
+
+si tenemos b = new absTree("Z") y a eso le hacemos insertTreeLeft(a);quedaria:
+				("Z")
+                                 /
+			      ("a")
+			      /   \
+			   ("b") ("c")	
+                           /   \
+			("d") ("e")	
+Ojo: cuidado con esta funcion, si en b hubiera habido algun valor en el nodo izquierdo este hubiera sido sobre escrito, ademas el nodo de la derecha esta en null, asi que si se intenta hacer un expandRight en b, habra un error de referencia nula.
+
+insertTreeRight(absTree d) equivalente a la funcion anterior pero se inserta el arbol en el nodo de la derecha.
+
+----------block
+
+atributos:
+
+List<instruction> instructions; La lista de instrucciones del bloque
+simtable tablasimbolos; La tabla de simbolos del bloque (no existen actualmente funciones que la modifiquen en esta clase, pero es publica y puede ser modificada directamente con las funciones de simtable.)
+
+
+subrutinas:
+block() -> inicializa el bloque de instrucciones.
+add(instruction) -> agrega la instruccion a la lista de instrucciones, regresa un booleano para comprobar si la operacion fue exitosa.
+get(int i) -> devuelve la instruccion que se encuentre en el indice i, en caso de que no exista retorna null.
+clear() -> elimina todas las intrucciones de la tabla.
+
+----------------function representa a una funcion.
+
+atributos: 
+
+private String Name; Nombre de la funcion
+
+private String intypes[]; tipos de las variables de entrada de la funcion
+ 
+simtable localTable; tabla de simbolos local (no existen actualmente funciones que la modifiquen en esta clase, pero es publica y puede ser modificada directamente con las funciones de simtable.)
+
+private String outType;  tipo del valor de salida de la funcion
+
+List<instruction> instructions; Lista de instrucciones de la funcion.
+
+subrutina:
+
+function(String Nombre, String tiposentrada[], String tipoSalida, simtable variablesEntrada)
+Contructor que crea la variabla, necesita el nombre, los tipos de entrada, el de salida y la tabla con los parametros de entrada ya en ella.
+
+Esta funciones retornan los parametros Name, intypes, outType respectivamente
+String Nombre()
+String[] TiposEntrada()
+String TipoSalida()
+	
+Estas funciones son analogas a las que se encuentran en block 
+boolean add(instruction ins)
+instruction get(int i)
+void clear()
+
+---------------functionTable tabla de funciones validas.
+
+atributos:
+
+List<function> functions; lista de funciones del programa
+simtable globalTable; Tabla de simbolos global (no existen actualmente funciones que la modifiquen en esta clase, pero es publica y puede ser modificada directamente con las funciones de simtable.)
+
+subrutinas 
+
+functionTable() inicializa la tabla de funciones.
+
+Las funciones exists, add, get y clear existen y funcionan equivalentementea como funcionan en el tipo simtable.
+
+
+
+
+
+
+
+
+
+
+
+
+ 
+
+
