@@ -1,0 +1,86 @@
+/**
+ * L2Y3 es un lenguaje imperativo realizado
+ *      en el laboratorio de Lenguajes 2 y 3
+ * @version     $Revision: 1.1.1.1 $
+ * @author      Gustavo Briceño <04-36771> Jesus Malledo <04-37210>
+ * @since       JDK1.4
+ */
+
+class Pruebas
+
+%start inicio
+
+white     : "([\r\n\t (//[^\n\r]*)(/\*[^(\*/)]*\*/)]+"
+|
+
+tok213D   : "\!="
+tok2626   : "\&\&"
+tok3A3D   : ":="
+tok3C3D   : "<="
+tok3E3D   : ">="
+tok3D3D   : "=="
+tok7C7C   : "\|\|"
+tok21     : "\!"
+tok25     : "\%"
+tok28     : "\("
+tok29     : "\)"
+tok2A     : "\*"
+tok2B     : "\+"
+tok2C     : "\,"
+tok2D     : "\-"
+tok2E     : "\."
+tok2F     : "\/"
+tok3B     : "\;"
+tok3C     : "\<"
+tok3D     : "\="
+tok3E     : "\>"
+tok5B     : "\["
+tok5D     : "\]"
+tok7B     : "\{"
+tok7D     : "\}"
+
+tokVoid   : "Void"
+tokTrue   : "True"
+tokFalse  : "False"
+tokIf     : "If"
+tokWhile  : "While"
+tokElse   : "Else"
+tokElseif : "Elseif"
+tokFun    : "Function"
+tokMain   : "Main"
+tokTypedef: "Typedef"
+tokUnion  : "Union"
+tokIdvar  : "[$@]?[a-z][_a-zA-Z0-9]*"
+tokIdtype : "[A-Z][_a-zA-Z0-9]*"
+tokIdunion: "[A-Z][_a-zA-Z0-9]*"
+tokIdfun  : "[A-Z][_a-zA-Z0-9]*"
+tokChar   : "'[[^'](\\[([01]?[0-9]?[0-9]))(2[0-9][0-9])]]'"
+tokNum    : "-?[0-9][0-9]*(.[0-9][0-9]*)?"
+tokString : "\"[^\"]*\""
+
+inicio    : variable
+/* COMPLETE */
+variable  : tokIdvar
+          | variable tok5B exprMath tok5D
+          | variable tok2E tokIdvar
+
+/* COMPLETE */
+exprMath  : number 
+          | exprMath oper2Math number 
+          | oper1Math number
+
+/* COMPLETE */
+oper2Math : tok2B %left 100
+          | tok2D %left 100
+          | tok2A %left 80
+          | tok2F %left 80
+          | tok25 %left 60
+
+/* COMPLETE */
+oper1Math : tok2D %left 40
+
+
+/* COMPLETE */
+number    : tokNum
+          | variable
+          | tok28 exprMath tok29
