@@ -2,185 +2,329 @@
  * L2Y3 es un lenguaje imperativo realizado
  *      en el laboratorio de Lenguajes 2 y 3
  * @version     $Revision: 1.1.1.1 $
- * @author      Gustavo Briceño <04-36771> Jesus Malledo <04-37210>
+ * @author      Gustavo BriceÃ±o <04-36771> Jesus Malledo <04-37210>
  * @since       JDK1.4
  */
 
-class L2y2
- 
-%start inicio
+class Pruebas
 
-white: [ "([\r\n\t (//[^\n\r]*)(/\*[^(\*/)]*\*/)]+" ]
+%start programa
 
-tok213D: "!="
-tok2626: "&&"
-tok3A3D: ":="
-tok3C3D: "<="
-tok3E3D: ">="
-tok3D3D: "=="
-tok7C7C: "||"
-tok21: "!"
-tok25: "%"
-tok28: "("
-tok29: ")"
-tok2A: "*"
-tok2B: "+"
-tok2C: ","
-tok2D: "-"
-tok2E: "."
-tok2F: "/"
-tok3B: ";"
-tok3C: "<"
-tok3D: "="
-tok3E: ">"
-tok5B: "["
-tok5D: "]"
-tok7B: "{"
-tok7D: "}"
+white: [ "[\r\n\t ]+" ]
+|
 
-tokTrue: "True"
-tokFalse: "False"
-tokIf: "If"
-tokWhile: "While"
-tokElse: "Else"
-tokElseif: "Elseif"
-tokFun: "Function"
-tokMain: "Main"
-tokTypedef: "Typedef"
-tokUnion: "Union"
-tokIdvar: "[$@]?[a-z][_a-zA-Z0-9]*"
-tokIdtype: "[A-Z][_a-zA-Z0-9]*"
-tokIdunion: "[A-Z][_a-zA-Z0-9]*"
-tokIdfun: "[A-Z][_a-zA-Z0-9]*"
-tokChar: "'[[^'](\\[([01]?[0-9]?[0-9]))(2[0-9][0-9])]]'"
-tokNum: "-?[0-9][0-9]*(.[0-9][0-9]*)?"
-tokString: "\"[^\"]*\""
+tok213D   : "\!="
+tok2626   : "\&\&"
+tok3A3D   : ":="
+tok3C3D   : "<="
+tok3E3D   : ">="
+tok3D3D   : "=="
+tok7C7C   : "\|\|"
+tok21     : "\!"
+tok25     : "\%"
+tok28     : "\("
+tok29     : "\)"
+tok2A     : "\*"
+tok2B     : "\+"
+tok2C     : "\,"
+tok2D     : "\-"
+tok2E     : "\."
+tok2F     : "\/"
+tok3B     : "\;"
+tok3C     : "\<"
+tok3D     : "\="
+tok3E     : "\>"
+tok5B     : "\["
+tok5D     : "\]"
+tok7B     : "\{"
+tok7D     : "\}"
+
+tokVoid   : "Void"
+tokTrue   : "True"
+tokFalse  : "False"
+tokIf     : "If"
+tokWhile  : "While"
+tokFor    : "For"
+tokElse   : "Else"
+tokElseif : "Elseif"
+tokFun    : "Function"
+tokMain   : "Main"
+tokType   : "Type"
+tokIdvar  : "[$@]?[a-z][_a-zA-Z0-9]*"
+tokIdtype : "[A-Z][_a-zA-Z0-9]*"
+tokIdfun  : "[A-Z][_a-zA-Z0-9]*"
+tokChar   : "'[[^'](\\[([01]?[0-9]?[0-9]))(2[0-9][0-9])]]'"
+tokNum    : "-?[0-9][0-9]*(.[0-9][0-9]*)?"
+tokNat    : "[1-9][0-9]*"
+tokString : "\"[^\"]*\""
 
 
 
+/* complete */
+programa  : defs main defs
+          | main defs
+          | defs main
+          | main
+          | defs
 
-inicio    : defs main defs
+/* complete */
+main      : tokVoid tokFun tokMain bloque
 
-main      : tokFun tokMain bloque
-
+/* complete */
 defs      : defs def
           | def
-             
+
+/* complete */
 def       : defVar
-          | defType
-          | defUnion
           | defFun
-          
-defVar    : array vars tok3B 
-          | array asignVars tok3B 
-          
-array     : tokIdtype
-          | tokIdtype tok5B exprMath tok5D
-          
-vars      : vars tok2C tokIdVars
-          | tokIdVars
-              
-asignVars : tokIdvar tok3A3D valor
-          | tokIdvar tok2C asignVars tok2C valor
-              
-defType   : tokTypedef tokIdtype tok7B defVars tok7D
+          | defType
 
-defVars   : defVars defVar
-          | defVar
+/* complete */
+defVar    : type varAsign tok3B
 
-defUnion  : tokUnion tokIdunion tok7B typeList tok7D
-
-typeList  : typeList tok3B type 
-          | type
-              
-type      : array tokIdvar
-              
-valor     : string
-          | exprMath
-          | exprBool
+/* complete */
+type      : tokIdtype 
+          | type tok5B tokNat tok5D
+          | variante
           | registro
-          | tokChar
 
-string    : tokString
+/* REVISAR */
+variante  : tok3C defs tok3E
 
-exprMath  : exprMath oper2Math numero
-          | numero
-              
-numero    : tok28 exprMath tok29
-          | tokNum
-          | variable
-          | oper1Math exprMath
-          
-oper1Math : tok2D
+/* complete */
+registro  : tok7B defs tok7D
 
-oper2Math : tok2B
-          | tok2D
-          | tok2A
-          | tok2F
-          | tok25
 
-exprBool  : exprBool oper2Bool boolean 
-          | boolean
-          
-boolean   : tok28 exprBool tok29
-          | tokTrue
-          | tokFalse
-          | variable
-          | exprMath compMath exprMath
-          | oper1Bool exprBool
-          
-oper2Bool : tok2626
-          | tok213D
-          | tok7C7C
-          | tok3D3D
+/* complete */
+varAsign  : tokIdvar tok2C varAsign tok2C valor
+          | tokIdvar tok3A3D valor
 
-oper1Bool : tok21
+/* complete */
+defType   : tokType tokIdtype tok3D type
 
-compMath  : tok213D
-          | tok3C3D
-          | tok3E3D
-          | tok3C
-          | tok3E
-          | tok3D
+/* complete */
+defFun    : type tokFun tokIdfun tok28 defArgs tok29 bloque
 
-variable  : tokIdvar
-          | tokIdvar tok5B exprMath tok5D
+/* complete */
+defArgs   : defArgs tok2C defArg
+          | defArg
 
-defFun    : tokFun tokIdfun tok28 args tok29 bloque
+/* complete */
+defArg    : tokIdtype tokIdvar
 
-args      : args tok2C arg
-          | arg
-              
-arg       : array tokIdvar
+/* complete */
+bloque    : tok7B defs cmds tok7D
+          | tok7B cmds tok7D
 
-cmds      : cmds tok3B cmd
+/* complete */
+cmds      : cmds cmd
           | cmd
-          
-cmd       : asign
-          | iter
-          | cond
-          
-asign     : tokIdvar tok213D valor
-          | tokIdvar tok213D funcion
-          | tokIdvar tok5B exprMath tok5D tok213D valor
-          | tokIdvar tok5B exprMath tok5D tok213D funcion
-              
+
+/* complete */
+cmd       : asignacion
+          | funcion
+          | condicion
+          | iteracion
+
+/* complete */
+asignacion: variable tok3A3D valor tok3B
+          | variable tok3A3D funcion tok3B
+
+/* complete */
 funcion   : tokIdfun tok28 varList tok29
+          {
+            LinkedList var = $3;
+            subrutine a = new subrutine($1,var.toArray());
+            $$ = a;
+          }
 
-varList   : varList tok2C tokIdvar
-          | tokIdvar
+/* complete */
+varList   : varList tok2C variable
+          {
+            LinkedList a = $1;
+            a.add($3);
+            $$ = a;
+          }
 
-cond      : tokIf tok28 exprBool tok29 bloque
+          | variable                       
+          {
+            LinkedList a = new LinkedList();
+            a.add($1);
+            $$ = a;
+          }
+
+/* REVISAR */
+condicion : tokIf tok28 exprBool tok29 bloque
+          {
+            absTree a = new absTree(new mathoperator("if"));
+            a.insertTreeLeft( $3 );
+            a.insertTreeRight( $5 );
+            $$ = a;            
+          }
           | tokIf tok28 exprBool tok29 bloque tokElse bloque
-          | tokIf tok28 exprBool tok29 bloque elseIf
+          {
+            absTree then = $5;
+            then.insertTreeRight( $7 );            
+            absTree a = new absTree(new mathoperator("if"));
+            a.insertTreeLeft( $3 );
+            a.insertTreeRight( then );
+            $$ = a;            
+          }
+          | tokIf tok28 exprBool tok29 bloque elseIf 
+          {
+            absTree then = $5;
+            absTree elseIf = $6;
+            then.insertTreeLeft( elseIf.nodeLeft );            
+            then.insertTreeRight( elseIf.nodeRight );            
+            absTree a = new absTree(new mathoperator("if"));
+            a.insertTreeLeft( $3 );
+            a.insertTreeRight( then );
+            $$ = a;            
+          }
           | tokIf tok28 exprBool tok29 bloque elseIf tokElse bloque
-          
+          {
+            absTree then = $5;
+            absTree elseIf = $6;
+            elseIf.expandRight(null,$8)            
+            then.insertTreeLeft( elseIf.nodeLeft );            
+            then.insertTreeRight( elseIf.nodeRight );            
+            absTree a = new absTree(new mathoperator("if"));
+            a.insertTreeLeft( $3 );
+            a.insertTreeRight( then );
+            $$ = a;            
+          }
+
+/* complete */
 elseIf    : elseIf tokElseif tok28 exprBool tok29 bloque
+          {
+            absTree a = $1;
+            a.expandRight($4,$6)            
+            $$ = a;            
+          }
           | tokElseif tok28 exprBool tok29 bloque
+          {
+            absTree a = new absTree(null);
+            a.insertTreeLeft( $3 );
+            a.insertTreeRight( $5 );
+            $$ = a;            
+          }
 
-iter      : tokWhile tok28 exprBool tok29 bloque                            
+/* complete */
+iteracion : tokWhile tok28 exprBool tok29 bloque
+          {
+            $$ = new While($3,$5);
+          }
+          | tokFor tok28 defVar tok2C exprBool tok2C cmd tok29 bloque
+          {
+            bloque b = $9;
+            // agregar $3 como variable del for (pero no del bloque)
+            // agregar $7 como ultima instruccion del bloque
+            $$ = new While($5,b);
+          }
+//          | tokFor tok28 asignacion tok2C exprBool tok2C cmd tok29 bloque
 
-for       : tok28 tokIdType tokIdvar tok2C exprBool tok2C cmd tok29 bloque
-          | tok28 tokIdvar tok2C exprBool tok2C cmd tok29 bloque
-          
-bloque    : tok7B cmds tok7D
+/* complete */
+exprBool  : boolean                        {$$ = $1;}
+          | exprBool oper2Bool boolean
+          { 
+            absTree a = new absTree(new mathoperator($2));
+            a.insertTreeLeft($1);
+            a.insertTreeRight($3);
+            $$ = a;
+          }            
+          | oper1Bool boolean
+          {
+            absTree a = new absTree(new mathoperator("=="));
+            a.insertTreeLeft(new number(0.0));
+            a.insertTreeRight($2);
+            $$ = a;
+          }
+
+/* complete */
+oper2Bool : tok3D3D %left 200              {$$ = $1;}
+          | tok213D %left 200              {$$ = $1;}
+          | tok7C7C %left 180              {$$ = $1;}
+          | tok2626 %left 160              {$$ = $1;}
+
+/* complete */
+oper1Bool : tok21 %left 140                {$$ = $1;}
+
+
+/* complete */
+boolean   : tokTrue                        {$$ = $1;}
+          | tokFalse                       {$$ = $1;}
+//          | variable
+          | tok28 exprBool tok29           {$$ = $1;}
+          | exprMath operComp exprMath
+          {
+            absTree a = new absTree(new mathoperator($2));
+            a.insertTreeLeft($1);
+            a.insertTreeRight($3);
+            $$ = a;            
+          }
+
+/* complete */
+operComp  : tok3D3D                        {$$ = $1;}
+          | tok213D                        {$$ = $1;}
+          | tok3C3D                        {$$ = $1;}
+          | tok3E3D                        {$$ = $1;}
+          | tok3C                          {$$ = $1;}
+          | tok3E                          {$$ = $1;}
+
+
+
+/* REVISAR */
+valor     : exprBool                       {$$ = $1;}
+          | exprMath                       {$$ = $1;}
+          | tokChar                        {$$ = $1;}
+          | tokString                      {$$ = $1;}
+
+
+/* complete */
+variable  : tokIdvar                       {$$ = $1;}
+          | variable tok5B exprMath tok5D
+          {
+            absTree a = $1;
+            a.nodeRight.addDimension($3)
+            $$ = a;
+          }
+          | variable tok2E tokIdvar
+          {
+            absTree a = new absTree(new mathoperator($2));
+            a.insertTreeLeft($1);
+            a.insertTreeRight($3);
+            $$ = a;            
+          }
+
+/* complete */
+exprMath  : number                         {$$ = $1;}
+          | exprMath oper2Math number
+          {
+            absTree a = new absTree(new mathoperator($2));
+            a.insertTreeLeft($1);
+            a.insertTreeRight($3);
+            $$ = a;
+          }
+          | oper1Math number
+          {
+            absTree a = new absTree(new mathoperator("*"));
+            a.insertTreeLeft(new number(-1.0));
+            a.insertTreeRight($2);
+            $$ = a;
+          }
+
+/* complete */
+oper2Math : tok2B %left 100                {$$ = $1;}
+          | tok2D %left 100                {$$ = $1;}
+          | tok2A %left 80                 {$$ = $1;}
+          | tok2F %left 80                 {$$ = $1;}
+          | tok25 %left 60                 {$$ = $1;}
+
+/* complete */
+oper1Math : tok2D %left 40                 {$$ = $1}
+
+
+/* complete */
+number    : tokNum                         {$$ = $1}
+          | variable                       {$$ = $1}
+          | tok28 exprMath tok29           {$$ = $2}
