@@ -2,21 +2,21 @@ package simtable;
 
 public class absTree extends instruction{
 	
-	private String Value;
+	private data Value;
 	
 	absTree nodeLeft;
 	
 	absTree nodeRight;
 	
-	absTree(String value){
+	absTree(data value){
 		Value = value;		
 	}
 	
-	String Value(){
+	data Value(){
 		return Value;
 	}
 	
-	void expandLeft(String lvalue, String rvalue){
+	void expandLeft(data lvalue, data rvalue){
 		
 		if(nodeLeft == null && nodeRight ==null){
 			nodeLeft = new absTree(lvalue);
@@ -26,7 +26,7 @@ public class absTree extends instruction{
 		}
 	}
 	
-	void expandRight(String lvalue, String rvalue){
+	void expandRight(data lvalue, data rvalue){
 		
 		if(nodeLeft == null && nodeRight ==null){
 			nodeLeft = new absTree(lvalue);
@@ -43,5 +43,5 @@ public class absTree extends instruction{
 	void insertTreeRight(absTree right){
 		nodeRight = right;
 	}
-	
+		
 }

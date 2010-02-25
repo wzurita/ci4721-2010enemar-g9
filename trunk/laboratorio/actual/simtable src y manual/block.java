@@ -3,7 +3,7 @@ package simtable;
 import java.util.LinkedList;
 import java.util.List;
 
-public class block extends instruction{
+public class block{
 
 	List<instruction> instructions;
 	simtable tablasimbolos;
