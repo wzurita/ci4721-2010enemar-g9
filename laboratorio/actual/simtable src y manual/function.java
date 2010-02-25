@@ -41,7 +41,11 @@ public class function {
 	}
 	
 	instruction get(int i){
-		return instructions.get(i);
+		if(i < instructions.size() && i >= 0){
+			return instructions.get(i);
+		}else{
+			return null;
+		}
 	}
 	
 	// Elimina todos los objetos de la tabla.
