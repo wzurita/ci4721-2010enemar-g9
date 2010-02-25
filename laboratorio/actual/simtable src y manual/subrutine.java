@@ -3,9 +3,9 @@ package simtable;
 public class subrutine extends data{
 
 	private String Name;
-	private var[] InVariables;
+	private absTree[] InVariables;
 	
-	subrutine(String name, var[] invariables){
+	subrutine(String name, absTree[] invariables){
 		Name = name;
 		InVariables = invariables;
 	}
@@ -14,7 +14,7 @@ public class subrutine extends data{
 		return Name;
 	}
 	
-	var[] InVariables(){
+	absTree[] InVariables(){
 		return InVariables;
 	}
 
