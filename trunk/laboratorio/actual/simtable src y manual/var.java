@@ -3,9 +3,9 @@ package simtable;
 public class var extends data{
 
 	private String Name;
-	private absTree[] Dimension;
+	private absTree Dimension;
 	
-	var(String name, absTree[] dimension){
+	var(String name, absTree dimension){
 		Name = name;
 		Dimension = dimension;
 	}
@@ -14,7 +14,8 @@ public class var extends data{
 		return Name;
 	}
 
-	absTree[] Dimension(){
+	absTree Dimension(){
 		return Dimension;
 	}
+		
 }
