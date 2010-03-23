@@ -7,13 +7,13 @@ public class List {
 	private int Length;
 	
 	
-	List(Container con){
+	public List(Container con){
 		First = con;
 		Last = con;		
 		Length = 0;
 	}
 	
-	boolean add(Container con){
+	public boolean add(Container con){
 		if(search(con.getName())== null){
 			Last.setNext(con);
 			Last = con;
@@ -24,7 +24,7 @@ public class List {
 		}
 	}
 	
-	Container get(int index){
+	public Container get(int index){
 		Container Iterator = First;
 		int Pointer = 0;
 		
@@ -40,7 +40,7 @@ public class List {
 		return Iterator;
 	}
 	
-	Container search(String Name){
+	public Container search(String Name){
 		Container Iterator = First;
 		int Pointer = 0;
 		
@@ -55,7 +55,7 @@ public class List {
 		return null;
 	}
 	
-	Container[] toArray(){
+	public Container[] toArray(){
 		Container[] tmp = new Container[Length+1];
 		Container Iterator = First;
 			
@@ -67,26 +67,7 @@ public class List {
 		return tmp;
 	}
 	
-	int Length(){
+	public int Length(){
 		return Length+1;
 	}
-	
-	public static void main(String[] args){
-		List Lista = new List(new ContStr("Hola"));
-		System.out.println(Lista.get(0).getName());		
-		Lista.add(new ContStr("Prueba"));
-		System.out.println(Lista.get(1).getName());	
-		Lista.add(new ContStr("Louise"));
-		System.out.println(Lista.search("Louise").getName());	
-		System.out.println(Lista.search("Prueba").getName());	
-		System.out.println(Lista.add(new ContStr("Hola")));
-		
-		Container[] tmp = Lista.toArray();
-		
-		for(int i = 0; i < Lista.Length(); i++){
-			System.out.print(tmp[i].getName() + " ");
-		}
-		
-	}
-	
 }
